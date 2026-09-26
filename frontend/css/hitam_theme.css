@@ -1,0 +1,626 @@
+:root {
+  --hitam-primary: #1b5e20;
+  --hitam-dark: #0d3314;
+  --hitam-light: #2e7d32;
+  --hitam-accent: #43a047;
+  --hitam-mint: #e8f5e9;
+  --hitam-border: rgba(46, 125, 50, 0.25);
+  --hitam-bg: #eef3ef;
+  --hitam-text-main: #1f2937;
+  --hitam-text-muted: #4b5563;
+  --hitam-danger: #c62828;
+  --hitam-warning: #e65100;
+  --hitam-card-bg: rgba(255, 255, 255, 0.88);
+  --hitam-glass-bg: rgba(255, 255, 255, 0.75);
+  --hitam-glass-border: 1px solid rgba(255, 255, 255, 0.6);
+  --hitam-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-md: 0 6px 16px rgba(13, 51, 20, 0.08);
+  --shadow-lg: 0 12px 32px rgba(13, 51, 20, 0.12);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--hitam-font);
+  background: linear-gradient(135deg, #eef4ee 0%, #e2ece3 100%);
+  color: var(--hitam-text-main);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* GLASSMORPHISM UTILITY */
+.glass-card {
+  background: var(--hitam-glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--hitam-glass-border);
+  box-shadow: var(--shadow-glass);
+  border-radius: 8px;
+}
+
+/* TOP HEADER & ACCREDITATION BANNER */
+.hitam-header {
+  background: linear-gradient(135deg, var(--hitam-dark), var(--hitam-primary));
+  color: white;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-md);
+}
+
+.hitam-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hitam-logo-emblem {
+  background: white;
+  color: var(--hitam-dark);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 1px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 2px solid #a5d6a7;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+}
+
+.hitam-logo-emblem span {
+  font-size: 0.65rem;
+  color: var(--hitam-primary);
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.hitam-title-block h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.hitam-title-block p {
+  font-size: 0.82rem;
+  opacity: 0.95;
+  color: #e8f5e9;
+  letter-spacing: 0.3px;
+}
+
+.hitam-accreditation-tag {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* SUB TICKER BAR */
+.hitam-ticker-bar {
+  background: #f1f8e9;
+  border-bottom: 1px solid var(--hitam-border);
+  color: #2e7d32;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hitam-ticker-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hitam-ticker-badge {
+  background: var(--hitam-primary);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  margin-right: 8px;
+}
+
+/* USER STATUS BAR */
+.hitam-user-bar {
+  background-color: var(--hitam-primary);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--hitam-dark);
+}
+
+.hitam-user-bar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 16px;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.hitam-user-bar a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* PORTAL MAIN LAYOUT (2 COLUMNS matching StudentMaster.aspx) */
+.hitam-portal-container {
+  max-width: 1400px;
+  margin: 20px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 20px;
+}
+
+/* LEFT SIDEBAR MENU */
+.hitam-menu-card {
+  background: white;
+  border: 1px solid #dcdcdc;
+  box-shadow: var(--shadow-sm);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.hitam-menu-header {
+  background: var(--hitam-primary);
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 10px 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.hitam-menu-list {
+  list-style: none;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.hitam-menu-item {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.hitam-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  color: var(--hitam-text-main);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.hitam-menu-link:hover, .hitam-menu-link.active {
+  background-color: #e8f5e9;
+  color: var(--hitam-dark);
+  font-weight: 700;
+  padding-left: 18px;
+}
+
+.hitam-plus-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--hitam-primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* MAIN CONTENT AREA */
+.hitam-main-content {
+  background: white;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+}
+
+.hitam-section-title {
+  color: var(--hitam-primary);
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ACCORDION PILLS (matching StudentMaster.aspx) */
+.hitam-accordion-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hitam-accordion-header {
+  background-color: var(--hitam-primary);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.2s;
+  user-select: none;
+}
+
+.hitam-accordion-header:hover {
+  background-color: var(--hitam-dark);
+}
+
+.hitam-accordion-body {
+  padding: 16px;
+  background: #fdfdfd;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  margin-top: -6px;
+  margin-bottom: 8px;
+  display: none;
+}
+
+.hitam-accordion-body.open {
+  display: block;
+}
+
+/* DATA TABLES */
+.hitam-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  margin-top: 8px;
+}
+
+.hitam-table th {
+  background-color: #f1f8e9;
+  color: var(--hitam-dark);
+  text-align: left;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  font-weight: 700;
+}
+
+.hitam-table td {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  color: var(--hitam-text-main);
+}
+
+.hitam-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.hitam-table tr:hover {
+  background-color: #f1f8e9;
+}
+
+/* BADGES & CHIPS */
+.hitam-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.hitam-badge-success {
+  background-color: #c8e6c9;
+  color: #1b5e20;
+}
+
+.hitam-badge-warning {
+  background-color: #fff9c4;
+  color: #f57f17;
+}
+
+.hitam-badge-danger {
+  background-color: #ffcdd2;
+  color: #b71c1c;
+}
+
+/* BUTTONS */
+.hitam-btn {
+  background-color: var(--hitam-primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hitam-btn:hover {
+  background-color: var(--hitam-dark);
+}
+
+.hitam-btn-secondary {
+  background-color: #616161;
+}
+
+.hitam-btn-secondary:hover {
+  background-color: #424242;
+}
+
+.hitam-btn-outline {
+  background-color: transparent;
+  color: var(--hitam-primary);
+  border: 1px solid var(--hitam-primary);
+}
+
+.hitam-btn-outline:hover {
+  background-color: #e8f5e9;
+}
+
+.hitam-btn-danger {
+  background-color: var(--hitam-danger);
+}
+
+.hitam-btn-danger:hover {
+  background-color: #b71c1c;
+}
+
+/* LOGIN PORTAL STYLING */
+.hitam-login-wrapper {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.hitam-login-card {
+  background: white;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+}
+
+.hitam-login-card-header {
+  background: var(--hitam-primary);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.hitam-login-card-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.hitam-login-card-header p {
+  font-size: 0.82rem;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+.hitam-login-card-body {
+  padding: 24px;
+}
+
+.hitam-form-group {
+  margin-bottom: 16px;
+}
+
+.hitam-form-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--hitam-text-main);
+  margin-bottom: 6px;
+}
+
+.hitam-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.hitam-input:focus {
+  outline: none;
+  border-color: var(--hitam-primary);
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+}
+
+/* HARDWARE SENTINELKEY MODAL */
+.sentinel-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.sentinel-modal-backdrop.active {
+  display: flex;
+}
+
+.sentinel-modal-card {
+  background: white;
+  width: 90%;
+  max-width: 520px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  border-top: 6px solid var(--hitam-primary);
+  overflow: hidden;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.sentinel-modal-header {
+  padding: 16px 20px;
+  background: #f1f8e9;
+  border-bottom: 1px solid var(--hitam-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sentinel-modal-header h3 {
+  font-size: 1.1rem;
+  color: var(--hitam-dark);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sentinel-modal-body {
+  padding: 20px;
+}
+
+.sentinel-usb-status {
+  background: #f8faf9;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.sentinel-pulse-indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #f57f17;
+  display: inline-block;
+  margin-right: 8px;
+  animation: pulse 1.4s infinite;
+}
+
+.sentinel-pulse-indicator.connected {
+  background: #2e7d32;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.7; }
+}
+
+/* SENTINELKEY HARDWARE BADGE / STATS CARD */
+.sentinel-security-card {
+  background: linear-gradient(135deg, #134e26, #1d7c3a);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.sentinel-security-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sentinel-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  font-size: 0.78rem;
+}
+
+.sentinel-stat-item {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.sentinel-stat-label {
+  opacity: 0.85;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.sentinel-stat-value {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 900px) {
+  .hitam-portal-container {
+    grid-template-columns: 1fr;
+  }
+  .hitam-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+}
+
+/* MONOSPACE HARDWARE MAC BADGE */
+.hitam-mac-badge {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+

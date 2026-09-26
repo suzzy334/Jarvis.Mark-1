@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HITAM Campus Portal | Academic ERP &amp; SentinelKey Security Gateway</title>
+  <link rel="stylesheet" href="css/hitam_theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --portal-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --heading-font: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      font-family: var(--portal-font);
+      background: #f4f7f4 radial-gradient(circle at 10% 20%, rgba(27, 94, 32, 0.07) 0%, rgba(244, 247, 244, 0.9) 80%);
+      color: #1f2937;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    h1, h2, h3, h4, .brand-title {
+      font-family: var(--heading-font);
+    }
+
+    /* INSTITUTION HEADER */
+    .hitam-topbar {
+      background: linear-gradient(135deg, #092610 0%, #13461c 50%, #1b5e20 100%);
+      color: white;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #d4af37;
+      box-shadow: 0 4px 20px rgba(9, 38, 16, 0.25);
+    }
+    .hitam-crest-lockup {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .hitam-shield-badge {
+      background: white;
+      color: #092610;
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.15rem;
+      letter-spacing: 1px;
+      line-height: 1.1;
+      border: 2px solid #d4af37;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+    .hitam-shield-badge span {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #1b5e20;
+      letter-spacing: 0.5px;
+    }
+    .hitam-header-text h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+      margin: 0;
+    }
+    .hitam-header-text p {
+      font-size: 0.82rem;
+      color: #c8e6c9;
+      margin-top: 2px;
+      letter-spacing: 0.3px;
+    }
+    .hitam-accredit-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .hitam-accredit-pill .gold-dot {
+      color: #ffd54f;
+      font-size: 0.9rem;
+    }
+
+    /* TICKER MARQUEE */
+    .hitam-announcement-bar {
+      background: #e8f5e9;
+      border-bottom: 1px solid #c8e6c9;
+      padding: 8px 24px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #1b5e20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ticker-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-tag {
+      background: #1b5e20;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* MAIN CONTAINER GRID */
+    .portal-main-grid {
+      max-width: 1280px;
+      margin: 36px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 36px;
+      align-items: start;
+      flex: 1;
+    }
+
+    /* SHOWCASE HERO CARD */
+    .portal-showcase-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      padding: 28px;
+    }
+    .dept-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8f5e9;
+      color: #1b5e20;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid #a5d6a7;
+    }
+    .showcase-title {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #092610;
+      margin-top: 14px;
+      line-height: 1.25;
+    }
+    .showcase-desc {
+      font-size: 0.88rem;
+      color: #4b5563;
+      margin-top: 10px;
+      line-height: 1.55;
+    }
+
+    .puf-feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .puf-feature-item {
+      background: #f9fbf9;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: all 0.2s;
+    }
+    .puf-feature-item:hover {
+      border-color: #a5d6a7;
+      background: #f0f7f0;
+      transform: translateY(-2px);
+    }
+    .puf-feature-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+    .puf-feature-item h4 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #1b5e20;
+      margin: 0;
+    }
+    .puf-feature-item p {
+      font-size: 0.74rem;
+      color: #6b7280;
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+
+    /* 4-FACULTY MATRIX BOX */
+    .faculty-matrix-box {
+      margin-top: 24px;
+      padding: 16px;
+      background: #f4fbf4;
+      border: 1px solid #c8e6c9;
+      border-radius: 8px;
+    }
+    .faculty-matrix-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .faculty-matrix-header strong {
+      font-size: 0.82rem;
+      color: #092610;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .faculty-matrix-badge {
+      background: #d4af37;
+      color: #092610;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+    .faculty-chips-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .faculty-chip {
+      background: white;
+      border: 1px solid #dcdcdc;
+      border-radius: 6px;
+      padding: 8px 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .faculty-chip:hover {
+      border-color: #1b5e20;
+      box-shadow: 0 2px 8px rgba(27, 94, 32, 0.12);
+      transform: translateY(-1px);
+    }
+    .faculty-chip .fac-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #1f2937;
+      display: block;
+    }
+    .faculty-chip .fac-token {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #1b5e20;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    /* LOGIN CARD & ROLE TABS */
+    .portal-login-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .role-tabs-bar {
+      display: flex;
+      background: #f3f4f6;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .role-tab-btn {
+      flex: 1;
+      padding: 14px 10px;
+      border: none;
+      background: transparent;
+      font-family: var(--heading-font);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #6b7280;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .role-tab-btn span.tab-icon {
+      font-size: 1.15rem;
+    }
+    .role-tab-btn.active {
+      background: white;
+      color: #1b5e20;
+    }
+    .role-tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #1b5e20;
+    }
+    .role-tab-btn:hover:not(.active) {
+      background: #eaecef;
+      color: #1f2937;
+    }
+
+    .login-form-body {
+      padding: 28px 26px;
+    }
+    .tab-instruction-banner {
+      background: #f0fdf4;
+      border-left: 4px solid #1b5e20;
+      padding: 10px 14px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 0.8rem;
+      color: #14532d;
+    }
+    .tab-instruction-banner.faculty-mode {
+      background: #fffbeb;
+      border-left-color: #d97706;
+      color: #78350f;
+    }
+
+    .hitam-form-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .hitam-input-group {
+      margin-bottom: 18px;
+    }
+    .hitam-input-styled {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      color: #111827;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .hitam-input-styled:focus {
+      outline: none;
+      border-color: #1b5e20;
+      box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.15);
+    }
+
+    .btn-login-submit {
+      width: 100%;
+      padding: 12px 18px;
+      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-family: var(--heading-font);
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(27, 94, 32, 0.25);
+      transition: all 0.15s;
+    }
+    .btn-login-submit:hover {
+      background: linear-gradient(135deg, #144618 0%, #1b5e20 100%);
+      box-shadow: 0 6px 16px rgba(27, 94, 32, 0.35);
+      transform: translateY(-1px);
+    }
+
+    /* HARDWARE MODAL OVERRIDES */
+    .sentinel-modal-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      max-width: 480px;
+      width: 90%;
+      overflow: hidden;
+      animation: popIn 0.2s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .sentinel-modal-header {
+      background: linear-gradient(135deg, #092610, #1b5e20);
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sentinel-modal-header h3 {
+      font-size: 1.05rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* PIN D4 TOUCH VISUALIZER */
+    .presence-touch-card {
+      background: #fffbeb;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 16px;
+      text-align: center;
+      animation: pulseGlow 1.5s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+    }
+    .presence-touch-card strong {
+      color: #92400e;
+      font-size: 0.96rem;
+      display: block;
+    }
+    .presence-touch-card p {
+      color: #b45309;
+      font-size: 0.8rem;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    .hitam-footer {
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      padding: 16px 24px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP INSTITUTIONAL HEADER -->
+  <header class="hitam-topbar">
+    <div class="hitam-crest-lockup">
+      <div class="hitam-logo-emblem" style="background:transparent; border:none; padding:0; display:flex; align-items:center;">
+        <svg class="hitam-tree-logo" viewBox="0 0 54 54" width="54" height="54" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="27" cy="27" r="26" fill="#FFFFFF" stroke="#4A9B3E" stroke-width="1.8"/>
+          <!-- Trunk & Roots -->
+          <path d="M26 43 L28 43 L27.5 31 C29 29 32 26 35 25 M26.5 31 C25 29 22 26 19 25" stroke="#1B5E20" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Left Brain Hemisphere (Nature Foliage) -->
+          <path d="M26 12 C23 11 19 12 17 15 C15 18 16 22 17 25 C16 28 18 31 22 31 C25 31 26 28 26 26" fill="#4A9B3E" fill-opacity="0.9" stroke="#1B5E20" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- Right Brain Hemisphere (Engineering Gyri) -->
+          <path d="M28 12 C31 11 35 12 37 15 C39 18 38 22 37 25 C38 28 36 31 32 31 C29 31 28 28 28 26" fill="#2E7D32" fill-opacity="0.95" stroke="#0D3314" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- Synaptic/Neural Nodes & Leaves -->
+          <path d="M21 16 Q24 19 26 22 M33 16 Q30 19 28 22" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="20" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="34" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="14" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="22" r="1.5" fill="#D4AF37"/>
+          <!-- Ground Base -->
+          <path d="M18 43 Q27 41 36 43" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="hitam-header-text">
+        <h1>Hyderabad Institute of Technology and Management</h1>
+        <p>UGC Autonomous Institution | Affiliated to JNTUH | Approved by AICTE | NAAC 'A+' Grade</p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="challenge.html" style="background:#d4af37; color:#092610; font-weight:800; text-decoration:none; font-size:0.75rem; padding:6px 14px; border-radius:16px; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+        <span>⚡</span> Global Hacker Challenge
+      </a>
+      <div class="hitam-accredit-pill">
+        <span class="gold-dot">★</span> NAAC A+ Accredited <span style="opacity:0.4;">|</span> NBA (ECE, CSE, MECH) <span style="opacity:0.4;">|</span> ISO 9001:2015
+      </div>
+    </div>
+  </header>
+
+  <!-- ROLLING NOTICE SUB-BAR -->
+  <div class="hitam-announcement-bar">
+    <div class="ticker-content">
+      <span class="ticker-tag">OFFICIAL NOTICE</span>
+      <span>Major Project SentinelKey™ Silicon PUF Security Active — Faculty physical USB authentication strictly enforced | Student Academic Portal 2026-27</span>
+    </div>
+    <div style="font-size:0.76rem; color:#2e7d32; font-weight:700;">
+      Academic Session: 2026-2027
+    </div>
+  </div>
+
+  <!-- MAIN PORTAL CONTAINER -->
+  <main class="portal-main-grid">
+
+    <!-- LEFT COLUMN: INSTITUTIONAL SHOWCASE & FACULTY MATRIX -->
+    <div class="portal-showcase-card">
+      <div class="dept-badge">
+        🏛️ Department of Electronics and Communication Engineering
+      </div>
+      <h2 class="showcase-title">
+        Campus Academic ERP &amp; Cryptographic Gateway
+      </h2>
+      <p class="showcase-desc">
+        Integrated university information management system protected by <strong>SentinelKey™ SRAM-PUF</strong> hardware root-of-trust. Faculty members attest classroom attendance using physical USB silicon tokens.
+      </p>
+
+      <!-- 4 Core Security Pillars -->
+      <div class="puf-feature-grid">
+        <div class="puf-feature-item">
+          <div class="puf-feature-icon">🔒</div>
+          <div>
+            <h4>Zero Flash Storage</h4>
+            <p>Private keys are never stored in flash memory; derived dynamically from silicon variations.</p>
+          </div>
+        </div>
+        <div class="puf-feature-item">
+          <div class="puf-feature-icon">🔑</div>
+          <div>
+            <h4>Faculty USB Enforcement</h4>
+            <p>No faculty access is permitted without their assigned hardware SentinelKey USB token.</p>
+          </div>
+        </div>
+        <div class="puf-feature-item">
+          <div class="puf-feature-icon">👆</div>
+          <div>
+            <h4>Human Presence (Pin D4)</h4>
+            <p>Physical touch verification prevents remote malware and automated session hijacking.</p>
+          </div>
+        </div>
+        <div class="puf-feature-item">
+          <div class="puf-feature-icon">🎓</div>
+          <div>
+            <h4>Student Direct Entry</h4>
+            <p>Students authenticate directly via institutional credentials to view academic records.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 PRE-CONFIGURED FACULTY ACCOUNTS MATRIX -->
+      <div class="faculty-matrix-box">
+        <div class="faculty-matrix-header">
+          <strong>⚡ Pre-Configured Faculty Tokens (Click to Test):</strong>
+          <span class="faculty-matrix-badge">4 Hardware Keys</span>
+        </div>
+        <div class="faculty-chips-grid">
+          <div class="faculty-chip" onclick="quickSelectFaculty('FAC-ECE-101', 'faculty@123', 'Dr. K. Ramesh', 'ESP32-SENTINEL-FAC01')">
+            <span class="fac-name">Dr. K. Ramesh (HOD)</span>
+            <span class="fac-token">🔑 ESP32-SENTINEL-FAC01</span>
+          </div>
+          <div class="faculty-chip" onclick="quickSelectFaculty('FAC-ECE-102', 'faculty@123', 'Dr. P. Sunitha', 'ESP32-SENTINEL-FAC02')">
+            <span class="fac-name">Dr. P. Sunitha (Assoc Prof)</span>
+            <span class="fac-token">🔑 ESP32-SENTINEL-FAC02</span>
+          </div>
+          <div class="faculty-chip" onclick="quickSelectFaculty('FAC-ECE-103', 'faculty@123', 'Dr. V. Rajesh', 'ESP32-SENTINEL-FAC03')">
+            <span class="fac-name">Dr. V. Rajesh (Assoc Prof)</span>
+            <span class="fac-token">🔑 ESP32-SENTINEL-FAC03</span>
+          </div>
+          <div class="faculty-chip" onclick="quickSelectFaculty('FAC-ECE-104', 'faculty@123', 'Dr. M. Anitha', 'ESP32-SENTINEL-FAC04')">
+            <span class="fac-name">Dr. M. Anitha (Asst Prof)</span>
+            <span class="fac-token">🔑 ESP32-SENTINEL-FAC04</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 10px; display: flex; gap: 8px;">
+          <button class="hitam-btn hitam-btn-outline" style="flex:1; font-size:0.72rem; padding:6px;" onclick="quickSelectStudent('23E51A0417', 'Sri@7254')">
+            🎓 Student: Srinath (23E51A0417)
+          </button>
+          <button class="hitam-btn hitam-btn-outline" style="flex:1; font-size:0.72rem; padding:6px;" onclick="quickSelectAdmin('admin@hitam.org', 'admin@123')">
+            🛡️ College Admin (Exam Cell)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: OFFICIAL ROLE LOGIN CARD -->
+    <div class="portal-login-card">
+      <!-- ROLE TABS -->
+      <div class="role-tabs-bar">
+        <button type="button" class="role-tab-btn active" id="tabStudent" onclick="switchRoleTab('student')">
+          <span class="tab-icon">🎓</span>
+          Student Portal
+        </button>
+        <button type="button" class="role-tab-btn" id="tabFaculty" onclick="switchRoleTab('faculty')">
+          <span class="tab-icon">👨‍🏫</span>
+          Faculty Portal
+        </button>
+        <button type="button" class="role-tab-btn" id="tabAdmin" onclick="switchRoleTab('admin')">
+          <span class="tab-icon">🛡️</span>
+          Exam / Admin
+        </button>
+      </div>
+
+      <!-- FORM CONTAINER -->
+      <div class="login-form-body">
+        <div id="tabInstruction" class="tab-instruction-banner">
+          <strong>Student Direct Access:</strong> Enter your Hall Ticket / Roll Number and Password to access your academic dashboard. No hardware key is required.
+        </div>
+
+        <form id="loginForm" onsubmit="handlePortalLogin(event)">
+          <div class="hitam-input-group">
+            <label class="hitam-form-label" id="lblIdentifier" for="identifier">ROLL NUMBER</label>
+            <input class="hitam-input-styled" type="text" id="identifier" placeholder="e.g. 23E51A0417" required value="23E51A0417">
+          </div>
+
+          <div class="hitam-input-group">
+            <label class="hitam-form-label" for="password">PORTAL PASSWORD</label>
+            <input class="hitam-input-styled" type="password" id="password" placeholder="Enter password" required value="Sri@7254">
+          </div>
+
+          <div id="loginAlert" style="display:none; padding:10px 14px; margin-bottom:16px; border-radius:6px; font-size:0.82rem; font-weight:600;"></div>
+
+          <button type="submit" id="btnLogin" class="btn-login-submit">
+            <span id="btnText">Sign In to Student Portal</span> &rarr;
+          </button>
+        </form>
+
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #f0f0f0; text-align: center;">
+          <a href="#" onclick="openLostTokenModal(event)" style="font-size:0.78rem; color:#1b5e20; text-decoration:none; font-weight:600;">
+            Faculty Lost or Damaged Hardware Token? Request Emergency OTP &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- HARDWARE SENTINELKEY ATTESTATION MODAL -->
+  <div class="sentinel-modal-backdrop" id="hardwareModal">
+    <div class="sentinel-modal-card">
+      <div class="sentinel-modal-header">
+        <h3>🔑 Faculty Hardware Attestation</h3>
+        <button onclick="closeHardwareModal()" style="background:none; border:none; color:white; font-size:1.4rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="sentinel-modal-body" style="padding: 22px;">
+        <div class="sentinel-usb-status" style="margin-bottom: 18px;">
+          <div id="statusPulse" class="sentinel-pulse-indicator"></div>
+          <strong id="usbStatusText" style="font-size:0.95rem; color:#111827;">Awaiting Hardware Connection...</strong>
+          <p id="usbSubText" style="font-size:0.8rem; color:#6b7280; margin-top:4px;">
+            Plug in token for <span id="authFacultyName" style="font-weight:700; color:#1b5e20;">Faculty Member</span>
+          </p>
+        </div>
+
+        <!-- Token Bound Info Badge -->
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:10px 14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.78rem; color:#166534; font-weight:600;">Account Bound Token:</span>
+          <span id="badgeTargetDeviceId" style="background:#15803d; color:white; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:4px;">
+            ESP32-SENTINEL-FAC01
+          </span>
+        </div>
+
+        <!-- PIN D4 PHYSICAL TOUCH PROMPT -->
+        <div id="presencePromptBox" class="presence-touch-card" style="display:none;">
+          <strong>👉 PHYSICAL PRESENCE REQUIRED: TOUCH PIN D4</strong>
+          <p>
+            Please touch or press <strong>Pin D4 (GPIO 4 / Touch0)</strong> on your ESP32 board to authorize cryptographic signing.
+          </p>
+        </div>
+
+        <!-- Testing Simulator Selector -->
+        <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:6px; padding:12px; margin-bottom:18px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+            <input type="checkbox" id="chkEmulation" checked onchange="toggleEmulation(this.checked)">
+            <label for="chkEmulation" style="cursor:pointer; font-size:0.82rem; font-weight:700; color:#374151;">
+              Test Mode: Virtual Silicon PUF Core (Simulate Board)
+            </label>
+          </div>
+          <div id="emulationSelectorWrap" style="font-size:0.78rem; color:#6b7280;">
+            Simulated Token Identity:
+            <select id="selSimulatedToken" class="hitam-input-styled" style="padding:4px 8px; font-size:0.76rem; margin-top:4px;" onchange="onSimulatedTokenChange(this.value)">
+              <option value="ESP32-SENTINEL-FAC01">ESP32-SENTINEL-FAC01 (Dr. K. Ramesh)</option>
+              <option value="ESP32-SENTINEL-FAC02">ESP32-SENTINEL-FAC02 (Dr. P. Sunitha)</option>
+              <option value="ESP32-SENTINEL-FAC03">ESP32-SENTINEL-FAC03 (Dr. V. Rajesh)</option>
+              <option value="ESP32-SENTINEL-FAC04">ESP32-SENTINEL-FAC04 (Dr. M. Anitha)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <button id="btnConnectSerial" class="btn-login-submit" style="flex:1;" onclick="executeHardwareHandshake()">
+            🔌 Connect &amp; Sign Challenge
+          </button>
+          <button class="hitam-btn hitam-btn-secondary" style="padding:10px 14px;" onclick="closeHardwareModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMERGENCY RECOVERY DESK MODAL -->
+  <div class="sentinel-modal-backdrop" id="recoveryModal">
+    <div class="sentinel-modal-card">
+      <div class="sentinel-modal-header">
+        <h3>🛡️ Emergency Token Recovery Desk</h3>
+        <button onclick="closeRecoveryModal()" style="background:none; border:none; color:white; font-size:1.4rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="sentinel-modal-body" style="padding: 22px;">
+        <p style="font-size:0.82rem; color:#4b5563; margin-bottom:14px; line-height:1.4;">
+          If your SentinelKey hardware token is lost, misplaced, or damaged, enter your Employee ID / Roll Number below to authenticate using an Admin-issued Emergency One-Time Passcode (OTP).
+        </p>
+
+        <div class="hitam-input-group">
+          <label class="hitam-form-label">EMPLOYEE ID / ROLL NUMBER</label>
+          <input class="hitam-input-styled" type="text" id="recoveryIdentifier" placeholder="e.g. FAC-ECE-101">
+        </div>
+
+        <div class="hitam-input-group">
+          <label class="hitam-form-label">6-DIGIT EMERGENCY OTP CODE</label>
+          <input class="hitam-input-styled" type="text" id="recoveryOtp" placeholder="Enter OTP code received from College Admin">
+        </div>
+
+        <div id="recoveryAlert" style="display:none; padding:10px; margin-bottom:14px; border-radius:6px; font-size:0.8rem; font-weight:600;"></div>
+
+        <div style="display:flex; gap:10px;">
+          <button class="btn-login-submit" style="flex:1;" onclick="submitRecoveryOtp()">
+            Verify OTP &amp; Enter Portal
+          </button>
+          <button class="hitam-btn hitam-btn-outline" style="padding:10px;" onclick="requestNewOtp()">
+            Request OTP
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="hitam-footer">
+    Hyderabad Institute of Technology and Management (Autonomous) &bull; Department of Electronics &amp; Communication Engineering &bull; Major Project 2026
+  </footer>
+
+  <script src="js/web_serial.js"></script>
+  <script>
+    let activeRole = 'student';
+    let pendingAuthData = null;
+
+    // Default simulation state
+    window.sentinelBridge.isEmulationMode = true;
+
+    function switchRoleTab(role) {
+      activeRole = role;
+      document.querySelectorAll('.role-tab-btn').forEach(b => b.classList.remove('active'));
+      
+      const tabInst = document.getElementById('tabInstruction');
+      const lblId = document.getElementById('lblIdentifier');
+      const inpId = document.getElementById('identifier');
+      const inpPass = document.getElementById('password');
+      const btnText = document.getElementById('btnText');
+
+      if (role === 'student') {
+        document.getElementById('tabStudent').classList.add('active');
+        tabInst.className = 'tab-instruction-banner';
+        tabInst.innerHTML = '<strong>Student Direct Access:</strong> Enter your Hall Ticket / Roll Number and Password to access your academic dashboard. No hardware token required.';
+        lblId.innerText = 'HALL TICKET / ROLL NUMBER';
+        inpId.placeholder = 'e.g. 23E51A0417';
+        inpId.value = '23E51A0417';
+        inpPass.value = 'Sri@7254';
+        btnText.innerText = 'Sign In to Student Portal';
+      } else if (role === 'faculty') {
+        document.getElementById('tabFaculty').classList.add('active');
+        tabInst.className = 'tab-instruction-banner faculty-mode';
+        tabInst.innerHTML = '<strong>🔒 Faculty PUF Protection Active:</strong> Enter your Employee ID and password. Physical SentinelKey USB token attestation with Pin D4 presence touch is strictly required.';
+        lblId.innerText = 'FACULTY EMPLOYEE ID / EMAIL';
+        inpId.placeholder = 'e.g. FAC-ECE-101 or kramesh@hitam.org';
+        inpId.value = 'FAC-ECE-101';
+        inpPass.value = 'faculty@123';
+        btnText.innerText = 'Verify Credentials & Connect Token';
+      } else if (role === 'admin') {
+        document.getElementById('tabAdmin').classList.add('active');
+        tabInst.className = 'tab-instruction-banner';
+        tabInst.innerHTML = '<strong>Examination &amp; IT Cell:</strong> Administrator portal for device management, emergency OTP issuance, and cryptographic audit monitoring.';
+        lblId.innerText = 'ADMINISTRATIVE EMAIL';
+        inpId.placeholder = 'e.g. admin@hitam.org';
+        inpId.value = 'admin@hitam.org';
+        inpPass.value = 'admin@123';
+        btnText.innerText = 'Sign In to Admin Console';
+      }
+    }
+
+    function quickSelectFaculty(empId, pass, name, devId) {
+      switchRoleTab('faculty');
+      document.getElementById('identifier').value = empId;
+      document.getElementById('password').value = pass;
+      document.getElementById('selSimulatedToken').value = devId;
+      window.sentinelBridge.setDeviceId(devId);
+    }
+
+    function quickSelectStudent(roll, pass) {
+      switchRoleTab('student');
+      document.getElementById('identifier').value = roll;
+      document.getElementById('password').value = pass;
+    }
+
+    function quickSelectAdmin(email, pass) {
+      switchRoleTab('admin');
+      document.getElementById('identifier').value = email;
+      document.getElementById('password').value = pass;
+    }
+
+    function onSimulatedTokenChange(devId) {
+      window.sentinelBridge.setDeviceId(devId);
+      document.getElementById('badgeTargetDeviceId').innerText = devId;
+    }
+
+    async function handlePortalLogin(e) {
+      e.preventDefault();
+      const identifier = document.getElementById('identifier').value.trim();
+      const password = document.getElementById('password').value;
+      const alertBox = document.getElementById('loginAlert');
+      const btn = document.getElementById('btnLogin');
+
+      alertBox.style.display = 'none';
+      btn.disabled = true;
+
+      try {
+        const resp = await fetch('/api/auth/login-pass', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier, password })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok) {
+          alertBox.style.display = 'block';
+          alertBox.style.background = '#fee2e2';
+          alertBox.style.color = '#991b1b';
+          alertBox.innerText = data.error || data.message || 'Authentication failed.';
+          return;
+        }
+
+        if (data.status === 'REQUIRE_HARDWARE_TOKEN') {
+          // Faculty Member - Launch Hardware Token Gateway Modal
+          pendingAuthData = data;
+          openHardwareModal();
+        } else if (data.status === 'SUCCESS') {
+          // Student or Admin - Direct Login!
+          sessionStorage.setItem('sentinel_user', JSON.stringify(data.user));
+          routeUserByRole(data.role);
+        }
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = '#fee2e2';
+        alertBox.style.color = '#991b1b';
+        alertBox.innerText = 'Network connection failed. Backend server may be offline.';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function openHardwareModal() {
+      document.getElementById('hardwareModal').classList.add('active');
+      document.getElementById('authFacultyName').innerText = pendingAuthData.name;
+      document.getElementById('badgeTargetDeviceId').innerText = pendingAuthData.device_id;
+      document.getElementById('selSimulatedToken').value = pendingAuthData.device_id;
+      window.sentinelBridge.setDeviceId(pendingAuthData.device_id);
+
+      document.getElementById('usbStatusText').innerText = `Ready to Attest: ${pendingAuthData.device_id}`;
+      document.getElementById('usbSubText').innerText = `Plug in token for ${pendingAuthData.name} (${pendingAuthData.roll_or_emp_id})`;
+    }
+
+    function closeHardwareModal() {
+      document.getElementById('hardwareModal').classList.remove('active');
+    }
+
+    function toggleEmulation(checked) {
+      window.sentinelBridge.isEmulationMode = checked;
+      document.getElementById('emulationSelectorWrap').style.opacity = checked ? '1' : '0.4';
+      const statusText = document.getElementById('usbStatusText');
+      if (checked) {
+        statusText.innerText = 'Virtual Silicon PUF Core Active';
+        document.getElementById('statusPulse').classList.add('connected');
+      } else {
+        statusText.innerText = 'Physical ESP32 Hardware Mode Selected';
+        document.getElementById('statusPulse').classList.remove('connected');
+      }
+    }
+
+    async function executeHardwareHandshake() {
+      const btn = document.getElementById('btnConnectSerial');
+      const statusText = document.getElementById('usbStatusText');
+      const subText = document.getElementById('usbSubText');
+      const presenceBox = document.getElementById('presencePromptBox');
+
+      btn.disabled = true;
+      btn.innerText = 'Processing Silicon Challenge...';
+
+      window.sentinelBridge.onStatusChange = (status, msg) => {
+        statusText.innerText = msg;
+      };
+
+      window.sentinelBridge.onPromptPresence = (prompting) => {
+        presenceBox.style.display = prompting ? 'block' : 'none';
+      };
+
+      try {
+        // 1. Fetch challenge nonce from server
+        const challengeResp = await fetch(`/api/auth/challenge?user_id=${pendingAuthData.user_id}`);
+        const challengeData = await challengeResp.json();
+        const nonce = challengeData.nonce;
+
+        // Ensure bridge target device matches faculty account
+        const targetDeviceId = window.sentinelBridge.isEmulationMode 
+          ? document.getElementById('selSimulatedToken').value 
+          : pendingAuthData.device_id;
+
+        // 2. Hardware / Virtual Silicon executes challenge
+        const signature = await window.sentinelBridge.executeChallenge(nonce, targetDeviceId);
+
+        // 3. Verify signature with server
+        statusText.innerText = 'Verifying cryptographic signature on server...';
+        const verifyResp = await fetch('/api/auth/verify-token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: pendingAuthData.user_id,
+            nonce: nonce,
+            signature: signature,
+            device_id: targetDeviceId,
+            mac_address: (window.sentinelBridge && window.sentinelBridge.activeMac) ? window.sentinelBridge.activeMac : undefined
+          })
+        });
+
+        const verifyData = await verifyResp.json();
+
+        if (verifyResp.ok && verifyData.status === 'SUCCESS') {
+          statusText.innerText = 'Hardware Attestation Successful! Loading Faculty Portal...';
+          document.getElementById('statusPulse').classList.add('connected');
+          sessionStorage.setItem('sentinel_user', JSON.stringify(verifyData.user));
+          setTimeout(() => {
+            routeUserByRole(verifyData.role);
+          }, 800);
+        } else {
+          throw new Error(verifyData.error || 'Hardware attestation rejected by server.');
+        }
+      } catch (err) {
+        statusText.innerText = 'Attestation Failed!';
+        subText.innerText = err.message;
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = '🔌 Connect & Sign Challenge';
+      }
+    }
+
+    function routeUserByRole(role) {
+      if (role === 'student') {
+        window.location.href = 'student_dashboard.html';
+      } else if (role === 'faculty') {
+        window.location.href = 'faculty_dashboard.html';
+      } else if (role === 'admin') {
+        window.location.href = 'admin_dashboard.html';
+      } else {
+        window.location.href = 'student_dashboard.html';
+      }
+    }
+
+    function openLostTokenModal(e) {
+      e.preventDefault();
+      document.getElementById('recoveryModal').classList.add('active');
+    }
+
+    function closeRecoveryModal() {
+      document.getElementById('recoveryModal').classList.remove('active');
+    }
+
+    async function requestNewOtp() {
+      const id = document.getElementById('recoveryIdentifier').value.trim();
+      if (!id) {
+        alert('Please enter your Employee ID / Roll Number first.');
+        return;
+      }
+      try {
+        const resp = await fetch('/api/auth/lost-token-request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier: id, reason: 'Lost or damaged SentinelKey USB token' })
+        });
+        const d = await resp.json();
+        alert(d.message || 'Request recorded. College Administrator notified.');
+      } catch (err) {
+        alert('Failed to submit request.');
+      }
+    }
+
+    async function submitRecoveryOtp() {
+      const identifier = document.getElementById('recoveryIdentifier').value.trim();
+      const otp = document.getElementById('recoveryOtp').value.trim();
+      const alertBox = document.getElementById('recoveryAlert');
+
+      alertBox.style.display = 'none';
+
+      try {
+        const resp = await fetch('/api/auth/verify-recovery-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier, otp_code: otp })
+        });
+        const data = await resp.json();
+
+        if (resp.ok && data.status === 'SUCCESS') {
+          sessionStorage.setItem('sentinel_user', JSON.stringify(data.user));
+          alert('Emergency OTP Verified! Temporary access granted for 24 hours.');
+          routeUserByRole(data.role);
+        } else {
+          alertBox.style.display = 'block';
+          alertBox.style.background = '#fee2e2';
+          alertBox.style.color = '#991b1b';
+          alertBox.innerText = data.error || 'Invalid OTP code.';
+        }
+      } catch (err) {
+        alertBox.style.display = 'block';
+        alertBox.style.background = '#fee2e2';
+        alertBox.style.color = '#991b1b';
+        alertBox.innerText = 'Server communication error.';
+      }
+    }
+  </script>
+</body>
+</html>
+

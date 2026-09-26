@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HITAM College Portal | SentinelKey Hardware Authentication</title>
+  <link rel="stylesheet" href="css/hitam_theme.css">
+  <style>
+    .demo-credentials-box {
+      margin-top: 20px;
+      padding: 12px;
+      background: #e8f5e9;
+      border: 1px dashed var(--hitam-primary);
+      border-radius: 6px;
+      font-size: 0.78rem;
+    }
+    .demo-btn-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .demo-btn {
+      background: white;
+      border: 1px solid var(--hitam-primary);
+      color: var(--hitam-dark);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .demo-btn:hover {
+      background: var(--hitam-primary);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="hitam-header">
+    <div class="hitam-brand-group">
+      <div class="hitam-logo-emblem" style="background:transparent; border:none; padding:0;">
+        <svg class="hitam-tree-logo" viewBox="0 0 54 54" width="48" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="27" cy="27" r="26" fill="#FFFFFF" stroke="#4A9B3E" stroke-width="1.8"/>
+          <path d="M26 43 L28 43 L27.5 31 C29 29 32 26 35 25 M26.5 31 C25 29 22 26 19 25" stroke="#1B5E20" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M26 12 C23 11 19 12 17 15 C15 18 16 22 17 25 C16 28 18 31 22 31 C25 31 26 28 26 26" fill="#4A9B3E" fill-opacity="0.9" stroke="#1B5E20" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M28 12 C31 11 35 12 37 15 C39 18 38 22 37 25 C38 28 36 31 32 31 C29 31 28 28 28 26" fill="#2E7D32" fill-opacity="0.95" stroke="#0D3314" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M21 16 Q24 19 26 22 M33 16 Q30 19 28 22" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="20" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="34" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="14" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="22" r="1.5" fill="#D4AF37"/>
+          <path d="M18 43 Q27 41 36 43" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="hitam-title-block">
+        <h1>Hyderabad Institute of Technology and Management</h1>
+        <p>Department of Electronics and Communication Engineering</p>
+      </div>
+    </div>
+    <div class="hitam-accreditation-tag">
+      🛡️ Accredited by NAAC (A+ Grade) | Affiliated to JNTUH | Approved by AICTE
+    </div>
+  </header>
+
+  <!-- TICKER SUB-BAR -->
+  <div class="hitam-ticker-bar">
+    <div class="hitam-ticker-text">
+      <span class="hitam-ticker-badge">NOTICE</span>
+      Major Project SentinelKey PUF Hardware Security Active. All students & faculty must authenticate with physical USB tokens.
+    </div>
+    <div>Session: 2026-2027</div>
+  </div>
+
+  <!-- LOGIN WRAPPER -->
+  <div class="hitam-login-wrapper">
+    <div class="hitam-login-card">
+      <div class="hitam-login-card-header">
+        <h2>CAMPUS PORTAL LOGIN</h2>
+        <p>Protected by SentinelKey™ SRAM-PUF Hardware Token</p>
+      </div>
+
+      <div class="hitam-login-card-body">
+        <form id="loginForm" onsubmit="handleInitialLogin(event)">
+          <div class="hitam-form-group">
+            <label class="hitam-form-label" for="identifier">ROLL NO / EMPLOYEE ID / EMAIL</label>
+            <input class="hitam-input" type="text" id="identifier" placeholder="e.g. 23E51A0417 or admin@hitam.org" required value="23E51A0417">
+          </div>
+
+          <div class="hitam-form-group">
+            <label class="hitam-form-label" for="password">PASSWORD</label>
+            <input class="hitam-input" type="password" id="password" placeholder="Enter portal password" required value="hitam@123">
+          </div>
+
+          <div id="loginAlert" style="display:none; padding: 10px; margin-bottom: 15px; border-radius: 4px; font-size: 0.82rem;"></div>
+
+          <button type="submit" id="btnContinue" class="hitam-btn" style="width: 100%; justify-content: center; padding: 10px;">
+            VERIFY CREDENTIALS &amp; CONNECT TOKEN &rarr;
+          </button>
+        </form>
+
+        <!-- Emergency recovery link -->
+        <div style="text-align: center; margin-top: 14px;">
+          <a href="#" onclick="openLostTokenModal(event)" style="font-size: 0.78rem; color: var(--hitam-primary); text-decoration: none; font-weight: 600;">
+            Lost or Damaged your SentinelKey USB? Request Emergency OTP
+          </a>
+        </div>
+
+        <!-- 1-Click Demo Selector for evaluators -->
+        <div class="demo-credentials-box">
+          <strong>⚡ Quick Role Selector (Evaluator Shortcut):</strong>
+          <div class="demo-btn-row">
+            <button class="demo-btn" onclick="setCredentials('23E51A0417', 'Sri@7254')">Student (Srinath: Sri@7254)</button>
+            <button class="demo-btn" onclick="setCredentials('faculty@hitam.org', 'faculty@123')">Faculty (Attendance)</button>
+            <button class="demo-btn" onclick="setCredentials('admin@hitam.org', 'admin@123')">Admin (IT Cell)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HARDWARE SENTINELKEY MODAL -->
+  <div class="sentinel-modal-backdrop" id="hardwareModal">
+    <div class="sentinel-modal-card glass-panel">
+      <div class="sentinel-modal-header">
+        <h3>🔑 SentinelKey Hardware Verification</h3>
+        <button onclick="closeHardwareModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="sentinel-modal-body">
+        <div class="sentinel-usb-status">
+          <div id="statusPulse" class="sentinel-pulse-indicator"></div>
+          <strong id="usbStatusText">Awaiting Hardware Connection...</strong>
+          <p id="usbSubText" style="font-size:0.78rem; color:var(--hitam-text-muted); margin-top:4px;">
+            Plug your ESP32 SentinelKey token into any USB port and click below.
+          </p>
+        </div>
+
+        <!-- Physical Button Prompt Alert -->
+        <div id="presencePromptBox" style="display:none; background:#fff8e1; border:2px solid #ffb300; border-radius:6px; padding:14px; margin-bottom:16px; text-align:center;">
+          <strong style="color:#e65100; font-size:0.95rem;">👉 HUMAN PRESENCE REQUIRED: PIN D4</strong>
+          <p style="font-size:0.82rem; color:#bf360c; margin-top:4px; font-weight:600;">
+            Please touch or press <strong>Pin D4 (GPIO 4 / Touch0)</strong> on your ESP32 board to confirm your physical presence.
+          </p>
+        </div>
+
+        <!-- Emulation Toggle -->
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:0.82rem; background:#f9f9f9; padding:8px 12px; border-radius:4px; border:1px solid #eee;">
+          <input type="checkbox" id="chkEmulation" onchange="toggleEmulation(this.checked)">
+          <label for="chkEmulation" style="cursor:pointer;">
+            <strong>Simulate Hardware in Browser</strong> (Virtual SRAM-PUF Core for testing without physical board)
+          </label>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <button id="btnConnectSerial" class="hitam-btn" style="flex:1; justify-content:center;" onclick="executeHardwareHandshake()">
+            🔌 Connect &amp; Sign Challenge
+          </button>
+          <button class="hitam-btn hitam-btn-secondary" onclick="closeHardwareModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOST TOKEN RECOVERY MODAL -->
+  <div class="sentinel-modal-backdrop" id="recoveryModal">
+    <div class="sentinel-modal-card">
+      <div class="sentinel-modal-header">
+        <h3>🛡️ Emergency Token Recovery Desk</h3>
+        <button onclick="closeRecoveryModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="sentinel-modal-body">
+        <p style="font-size:0.82rem; color:var(--hitam-text-muted); margin-bottom:12px;">
+          If your SentinelKey is lost or broken, enter your Roll Number to log in with an Admin-issued Emergency OTP.
+        </p>
+
+        <div class="hitam-form-group">
+          <label class="hitam-form-label">ROLL NO / EMAIL</label>
+          <input class="hitam-input" type="text" id="recoveryIdentifier" placeholder="23E51A0417">
+        </div>
+
+        <div class="hitam-form-group">
+          <label class="hitam-form-label">6-DIGIT EMERGENCY OTP CODE</label>
+          <input class="hitam-input" type="text" id="recoveryOtp" placeholder="Enter code received from College Admin">
+        </div>
+
+        <div id="recoveryAlert" style="display:none; padding:8px; margin-bottom:12px; border-radius:4px; font-size:0.8rem;"></div>
+
+        <div style="display:flex; gap:10px;">
+          <button class="hitam-btn" style="flex:1; justify-content:center;" onclick="submitRecoveryOtp()">
+            Verify OTP &amp; Enter Portal
+          </button>
+          <button class="hitam-btn hitam-btn-outline" onclick="requestNewOtp()">
+            Request OTP from Admin
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/web_serial.js"></script>
+  <script>
+    let pendingAuthData = null;
+
+    function setCredentials(id, pass) {
+      document.getElementById("identifier").value = id;
+      document.getElementById("password").value = pass;
+    }
+
+    async function handleInitialLogin(e) {
+      e.preventDefault();
+      const identifier = document.getElementById("identifier").value.trim();
+      const password = document.getElementById("password").value;
+      const alertBox = document.getElementById("loginAlert");
+
+      alertBox.style.display = "none";
+
+      try {
+        const resp = await fetch("/api/auth/login-pass", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identifier, password })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok) {
+          alertBox.style.display = "block";
+          alertBox.style.background = "#ffebee";
+          alertBox.style.color = "#c62828";
+          alertBox.innerText = data.error || data.message || "Authentication failed.";
+          return;
+        }
+
+        if (data.status === "REQUIRE_HARDWARE_TOKEN") {
+          pendingAuthData = data;
+          openHardwareModal();
+        } else if (data.status === "SUCCESS") {
+          sessionStorage.setItem("sentinel_user", JSON.stringify(data.user));
+          routeUserByRole(data.role);
+        }
+      } catch (err) {
+        alertBox.style.display = "block";
+        alertBox.style.background = "#ffebee";
+        alertBox.style.color = "#c62828";
+        alertBox.innerText = "Network connection failed. Is the backend server running?";
+      }
+    }
+
+    function openHardwareModal() {
+      document.getElementById("hardwareModal").classList.add("active");
+      document.getElementById("usbStatusText").innerText = `Token Required: ${pendingAuthData.device_id}`;
+      document.getElementById("usbSubText").innerText = `Plug in token for ${pendingAuthData.name} (${pendingAuthData.roll_or_emp_id})`;
+    }
+
+    function closeHardwareModal() {
+      document.getElementById("hardwareModal").classList.remove("active");
+    }
+
+    function toggleEmulation(checked) {
+      window.sentinelBridge.isEmulationMode = checked;
+      const statusText = document.getElementById("usbStatusText");
+      if (checked) {
+        statusText.innerText = "Virtual Token Emulation Mode Enabled";
+        document.getElementById("statusPulse").classList.add("connected");
+      } else {
+        statusText.innerText = "Physical ESP32 Mode";
+        document.getElementById("statusPulse").classList.remove("connected");
+      }
+    }
+
+    async function executeHardwareHandshake() {
+      const btn = document.getElementById("btnConnectSerial");
+      const statusText = document.getElementById("usbStatusText");
+      const subText = document.getElementById("usbSubText");
+      const presenceBox = document.getElementById("presencePromptBox");
+
+      btn.disabled = true;
+      btn.innerText = "Processing Challenge...";
+
+      window.sentinelBridge.onStatusChange = (status, msg) => {
+        statusText.innerText = msg;
+      };
+
+      window.sentinelBridge.onPromptPresence = (prompting) => {
+        presenceBox.style.display = prompting ? "block" : "none";
+      };
+
+      try {
+        // 1. Fetch challenge nonce from server
+        const challengeResp = await fetch(`/api/auth/challenge?user_id=${pendingAuthData.user_id}`);
+        const challengeData = await challengeResp.json();
+        const nonce = challengeData.nonce;
+
+        // 2. Transmit to ESP32 / Virtual Token
+        const signature = await window.sentinelBridge.executeChallenge(nonce, pendingAuthData.helper_mask);
+
+        // 3. Verify signature with server
+        statusText.innerText = "Verifying silicon signature on server...";
+        const verifyResp = await fetch("/api/auth/verify-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: pendingAuthData.user_id,
+            nonce: nonce,
+            signature: signature,
+            device_id: pendingAuthData.device_id
+          })
+        });
+
+        const verifyData = await verifyResp.json();
+
+        if (verifyResp.ok && verifyData.status === "SUCCESS") {
+          statusText.innerText = "Authentication Successful! Loading Portal...";
+          document.getElementById("statusPulse").classList.add("connected");
+          sessionStorage.setItem("sentinel_user", JSON.stringify(verifyData.user));
+          setTimeout(() => {
+            routeUserByRole(verifyData.role);
+          }, 800);
+        } else {
+          throw new Error(verifyData.error || "Token verification rejected by server.");
+        }
+      } catch (err) {
+        statusText.innerText = "Verification Failed!";
+        subText.innerText = err.message;
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🔌 Connect & Sign Challenge";
+      }
+    }
+
+    function routeUserByRole(role) {
+      if (role === "student") {
+        window.location.href = "student_dashboard.html";
+      } else if (role === "faculty") {
+        window.location.href = "faculty_dashboard.html";
+      } else if (role === "admin") {
+        window.location.href = "admin_dashboard.html";
+      } else {
+        window.location.href = "student_dashboard.html";
+      }
+    }
+
+    function openLostTokenModal(e) {
+      e.preventDefault();
+      document.getElementById("recoveryModal").classList.add("active");
+    }
+
+    function closeRecoveryModal() {
+      document.getElementById("recoveryModal").classList.remove("active");
+    }
+
+    async function requestNewOtp() {
+      const id = document.getElementById("recoveryIdentifier").value.trim();
+      if (!id) {
+        alert("Please enter your Roll Number / Email first.");
+        return;
+      }
+      try {
+        const resp = await fetch("/api/auth/lost-token-request", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identifier: id, reason: "Lost or damaged hardware key" })
+        });
+        const d = await resp.json();
+        alert(d.message || "Request sent. The College Administrator can now issue your OTP.");
+      } catch (err) {
+        alert("Failed to submit request.");
+      }
+    }
+
+    async function submitRecoveryOtp() {
+      const identifier = document.getElementById("recoveryIdentifier").value.trim();
+      const otp = document.getElementById("recoveryOtp").value.trim();
+      const alertBox = document.getElementById("recoveryAlert");
+
+      alertBox.style.display = "none";
+
+      try {
+        const resp = await fetch("/api/auth/verify-recovery-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identifier, otp_code: otp })
+        });
+        const data = await resp.json();
+
+        if (resp.ok && data.status === "SUCCESS") {
+          sessionStorage.setItem("sentinel_user", JSON.stringify(data.user));
+          alert("Emergency Access Granted (Valid 24 Hours). Please collect replacement key from Admin.");
+          routeUserByRole(data.role);
+        } else {
+          alertBox.style.display = "block";
+          alertBox.style.background = "#ffebee";
+          alertBox.style.color = "#c62828";
+          alertBox.innerText = data.error || "Invalid OTP code.";
+        }
+      } catch (err) {
+        alertBox.style.display = "block";
+        alertBox.style.background = "#ffebee";
+        alertBox.style.color = "#c62828";
+        alertBox.innerText = "Server connection error.";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HITAM Faculty Portal | Classroom Attendance &amp; Silicon Hardware Attestation</title>
+  <link rel="stylesheet" href="css/hitam_theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --portal-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --heading-font: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      font-family: var(--portal-font);
+      background: #f4f7f4;
+      color: #1f2937;
+    }
+    h1, h2, h3, h4, .brand-title {
+      font-family: var(--heading-font);
+    }
+
+    /* INSTITUTION HEADER */
+    .hitam-topbar {
+      background: linear-gradient(135deg, #092610 0%, #13461c 50%, #1b5e20 100%);
+      color: white;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #d4af37;
+      box-shadow: 0 4px 16px rgba(9, 38, 16, 0.2);
+    }
+    .hitam-crest-lockup {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hitam-shield-badge {
+      background: white;
+      color: #092610;
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 0.95rem;
+      border: 2px solid #d4af37;
+    }
+    .hitam-shield-badge span {
+      font-size: 0.55rem;
+      color: #1b5e20;
+      font-weight: 700;
+    }
+
+    /* USER & ACTIVE TOKEN BAR */
+    .faculty-status-strip {
+      background: #092610;
+      color: white;
+      padding: 10px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.84rem;
+    }
+    .active-token-pill {
+      background: #1b5e20;
+      border: 1px solid #4ade80;
+      color: #dcfce7;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .token-pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+    }
+
+    /* 4-FACULTY SWITCHER BAR (Evaluator Shortcut) */
+    .faculty-eval-bar {
+      background: #f0fdf4;
+      border-bottom: 1px solid #bbf7d0;
+      padding: 8px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+    }
+    .eval-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+    .eval-chip {
+      background: white;
+      border: 1px solid #86efac;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #166534;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .eval-chip:hover, .eval-chip.active {
+      background: #15803d;
+      color: white;
+      border-color: #15803d;
+    }
+
+    /* CONTROLS CARD */
+    .faculty-controls-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 18px 24px;
+      margin: 20px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) 160px;
+      gap: 16px;
+      align-items: flex-end;
+    }
+
+    /* TAB NAVIGATION */
+    .dashboard-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 2px;
+    }
+    .dash-tab-btn {
+      padding: 8px 18px;
+      border: none;
+      background: transparent;
+      font-family: var(--heading-font);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #6b7280;
+      cursor: pointer;
+      border-radius: 6px 6px 0 0;
+      transition: all 0.15s;
+    }
+    .dash-tab-btn.active {
+      background: white;
+      color: #1b5e20;
+      border-bottom: 3px solid #1b5e20;
+    }
+
+    /* ROSTER CARD */
+    .roster-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .status-toggle-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .status-toggle-btn.present {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+    .status-toggle-btn.absent {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    /* ATTENDANCE SUMMARY PILL */
+    .attendance-counter-pill {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 10px 18px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #14532d;
+    }
+
+    /* HARDWARE ATTESTATION MODAL */
+    .attest-digest-box {
+      background: #111827;
+      color: #4ade80;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      word-break: break-all;
+      margin: 12px 0;
+      border: 1px solid #374151;
+    }
+
+    .presence-touch-card {
+      background: #fffbeb;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 16px;
+      text-align: center;
+      animation: pulseGlow 1.5s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP INSTITUTIONAL HEADER -->
+  <header class="hitam-topbar">
+    <div class="hitam-crest-lockup">
+      <div class="hitam-logo-emblem" style="background:transparent; border:none; padding:0; display:flex; align-items:center;">
+        <svg class="hitam-tree-logo" viewBox="0 0 54 54" width="52" height="52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="27" cy="27" r="26" fill="#FFFFFF" stroke="#4A9B3E" stroke-width="1.8"/>
+          <!-- Trunk & Roots -->
+          <path d="M26 43 L28 43 L27.5 31 C29 29 32 26 35 25 M26.5 31 C25 29 22 26 19 25" stroke="#1B5E20" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Left Brain Hemisphere (Nature Foliage) -->
+          <path d="M26 12 C23 11 19 12 17 15 C15 18 16 22 17 25 C16 28 18 31 22 31 C25 31 26 28 26 26" fill="#4A9B3E" fill-opacity="0.9" stroke="#1B5E20" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- Right Brain Hemisphere (Engineering Gyri) -->
+          <path d="M28 12 C31 11 35 12 37 15 C39 18 38 22 37 25 C38 28 36 31 32 31 C29 31 28 28 28 26" fill="#2E7D32" fill-opacity="0.95" stroke="#0D3314" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- Synaptic/Neural Nodes & Leaves -->
+          <path d="M21 16 Q24 19 26 22 M33 16 Q30 19 28 22" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="20" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="34" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="14" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="22" r="1.5" fill="#D4AF37"/>
+          <!-- Ground Base -->
+          <path d="M18 43 Q27 41 36 43" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1 style="font-size: 1.25rem; font-weight: 800; text-transform: uppercase; color: white; margin: 0;">
+          Hyderabad Institute of Technology and Management
+        </h1>
+        <p style="font-size: 0.78rem; color: #c8e6c9; margin-top: 2px;">
+          Faculty Academic Information System &bull; Cryptographic Hardware Attestation Gateway
+        </p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="challenge.html" style="background:#d4af37; color:#092610; font-weight:800; text-decoration:none; font-size:0.75rem; padding:6px 14px; border-radius:16px; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+        <span>⚡</span> Global Hacker Challenge
+      </a>
+      <div style="font-size: 0.76rem; color: #ffd54f; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+        <span>🔒</span> Silicon PUF Root-of-Trust Active
+      </div>
+    </div>
+  </header>
+
+  <!-- USER STRIP -->
+  <div class="faculty-status-strip">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span id="facDisplayGreeting" style="font-weight:700;">WELCOME: Dr. K. Ramesh (Professor &amp; HOD, Department of ECE)</span>
+      <span class="active-token-pill">
+        <span class="token-pulse-dot"></span>
+        <span id="facDisplayToken">TOKEN: ESP32-SENTINEL-FAC01</span>
+      </span>
+    </div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <span style="font-size:0.76rem; color:#9ca3af;">Emp ID: <strong id="facDisplayEmpId" style="color:white;">FAC-ECE-101</strong></span>
+      <a href="login.html" onclick="sessionStorage.clear()" style="color:#ef4444; font-weight:700; text-decoration:none;">Logout &rarr;</a>
+    </div>
+  </div>
+
+  <!-- 4-FACULTY EVALUATION SWITCHER -->
+  <div class="faculty-eval-bar">
+    <div><strong>⚡ Faculty Account Switcher (Test any of the 4 Faculty Members):</strong></div>
+    <div class="eval-btn-group">
+      <button class="eval-chip active" id="chipFac1" onclick="switchFacultyContext(1)">
+        Dr. K. Ramesh (FAC01)
+      </button>
+      <button class="eval-chip" id="chipFac2" onclick="switchFacultyContext(2)">
+        Dr. P. Sunitha (FAC02)
+      </button>
+      <button class="eval-chip" id="chipFac3" onclick="switchFacultyContext(3)">
+        Dr. V. Rajesh (FAC03)
+      </button>
+      <button class="eval-chip" id="chipFac4" onclick="switchFacultyContext(4)">
+        Dr. M. Anitha (FAC04)
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div style="max-width: 1400px; margin: 24px auto; padding: 0 24px;">
+
+    <!-- TAB NAVIGATION -->
+    <div class="dashboard-tabs">
+      <button class="dash-tab-btn active" id="btnTabRoster" onclick="showTab('roster')">
+        📝 Classroom Attendance Roster
+      </button>
+      <button class="dash-tab-btn" id="btnTabHistory" onclick="showTab('history')">
+        📜 Attested Attendance Sessions (Silicon Verified)
+      </button>
+    </div>
+
+    <!-- VIEW 1: CLASSROOM ROSTER -->
+    <div id="viewRoster">
+      <!-- CLASS & SUBJECT CONTROLS -->
+      <div class="faculty-controls-card">
+        <div>
+          <label class="hitam-form-label">BRANCH</label>
+          <select class="hitam-input" id="selBranch" onchange="loadRoster()">
+            <option value="ECE" selected>ECE (Electronics &amp; Comm)</option>
+            <option value="CSE">CSE (Computer Science)</option>
+          </select>
+        </div>
+        <div>
+          <label class="hitam-form-label">YEAR &amp; SECTION</label>
+          <select class="hitam-input" id="selYearSection" onchange="loadRoster()">
+            <option value="IV-A" selected>IV B.Tech - Section A</option>
+            <option value="IV-B">IV B.Tech - Section B</option>
+          </select>
+        </div>
+        <div>
+          <label class="hitam-form-label">SUBJECT</label>
+          <select class="hitam-input" id="selSubject">
+            <option value="Hardware Security & Cryptography" selected>EC803PE: Hardware Security &amp; Cryptography</option>
+            <option value="Embedded Systems & IoT">EC802PC: Embedded Systems &amp; IoT</option>
+            <option value="VLSI Design & Testing">EC801PC: VLSI Design &amp; Testing</option>
+            <option value="Wireless & Cellular Comms">EC804PE: Wireless &amp; Cellular Comms</option>
+          </select>
+        </div>
+        <div>
+          <label class="hitam-form-label">PERIOD</label>
+          <select class="hitam-input" id="selPeriod">
+            <option value="1">Period 1 (09:15 - 10:15)</option>
+            <option value="2" selected>Period 2 (10:15 - 11:15)</option>
+            <option value="3">Period 3 (11:15 - 12:15)</option>
+            <option value="4">Period 4 (01:00 - 02:00)</option>
+          </select>
+        </div>
+        <div>
+          <button class="hitam-btn" style="width:100%; justify-content:center; padding:10px;" onclick="loadRoster()">
+            Load Roster
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN ROSTER CARD -->
+      <div class="roster-card">
+        <div class="hitam-section-title">
+          <span id="rosterTitle">CLASSROOM ATTENDANCE ROSTER — IV B.TECH ECE-A</span>
+          <div style="display:flex; gap:8px;">
+            <button class="hitam-btn hitam-btn-outline" onclick="markAll('PRESENT')">Mark All Present</button>
+            <button class="hitam-btn hitam-btn-outline" onclick="markAll('ABSENT')">Clear All</button>
+          </div>
+        </div>
+
+        <div class="attendance-counter-pill">
+          <span id="counterText">Present: 10 / 10 (100%)</span>
+          <span style="font-size:0.78rem; font-weight:normal; color:#15803d;">
+            Click toggle button on any student to switch between PRESENT and ABSENT.
+          </span>
+        </div>
+
+        <table class="hitam-table">
+          <thead>
+            <tr>
+              <th style="width: 70px;">S.No</th>
+              <th style="width: 170px;">Roll Number</th>
+              <th>Student Name</th>
+              <th style="width: 190px;">Overall Aggregate</th>
+              <th style="width: 150px; text-align:center;">Today's Presence</th>
+            </tr>
+          </thead>
+          <tbody id="rosterTbody">
+            <tr>
+              <td colspan="5" style="text-align:center; padding:24px;">Loading classroom roster...</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- HARDWARE SUBMISSION FOOTER -->
+        <div style="margin-top: 24px; padding: 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong style="color:#092610; font-size:0.95rem;">🔒 SentinelKey Cryptographic Attestation Protocol</strong>
+            <p style="font-size:0.8rem; color:#4b5563; margin-top:3px;">
+              Submissions require hardware authorization from your SentinelKey USB token (<span id="tokenFooterId" style="font-weight:700; color:#15803d;">ESP32-SENTINEL-FAC01</span>). Records cannot be forged or tampered with.
+            </p>
+          </div>
+          <button class="btn-login-submit" style="padding: 11px 24px; font-size: 0.92rem; width: auto;" onclick="openFacultySignatureModal()">
+            🔑 Sign &amp; Submit Attendance
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: ATTESTED SESSIONS HISTORY -->
+    <div id="viewHistory" style="display:none;">
+      <div class="roster-card">
+        <div class="hitam-section-title">
+          <span>📜 CRYPTOGRAPHICALLY ATTESTED ATTENDANCE SESSIONS</span>
+          <button class="hitam-btn hitam-btn-outline" onclick="loadHistory()">Refresh Records</button>
+        </div>
+
+        <p style="font-size:0.82rem; color:#6b7280; margin-bottom:16px;">
+          Every attendance session listed below has been authenticated by a physical SentinelKey silicon PUF key. The cryptographic hash and hardware signature guarantee mathematical non-repudiation.
+        </p>
+
+        <table class="hitam-table">
+          <thead>
+            <tr>
+              <th>Session ID</th>
+              <th>Date &amp; Period</th>
+              <th>Subject</th>
+              <th>Attendance</th>
+              <th>Hardware Token</th>
+              <th>Silicon Signature Verification</th>
+            </tr>
+          </thead>
+          <tbody id="historyTbody">
+            <tr><td colspan="6" style="text-align:center; padding:20px;">Loading historical sessions...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HARDWARE SIGNATURE MODAL -->
+  <div class="sentinel-modal-backdrop" id="facultyModal">
+    <div class="sentinel-modal-card">
+      <div class="sentinel-modal-header">
+        <h3>🔑 Faculty Hardware Attestation Desk</h3>
+        <button onclick="closeFacultyModal()" style="background:none; border:none; color:white; font-size:1.4rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="sentinel-modal-body" style="padding: 22px;">
+        <div class="sentinel-usb-status" style="margin-bottom: 16px;">
+          <div id="facPulse" class="sentinel-pulse-indicator"></div>
+          <strong id="facUsbStatus">Ready for Hardware Attestation</strong>
+          <p id="facSubText" style="font-size:0.78rem; color:#6b7280; margin-top:4px;">
+            Attesting attendance payload with <span id="modalFacTokenId" style="font-weight:700; color:#15803d;">ESP32-SENTINEL-FAC01</span>
+          </p>
+        </div>
+
+        <!-- DIGEST PREVIEW -->
+        <div style="font-size:0.76rem; font-weight:700; color:#374151; text-transform:uppercase; margin-bottom:4px;">
+          Canonical Attendance Payload Digest (SHA-256):
+        </div>
+        <div id="digestBox" class="attest-digest-box">
+          Computing payload hash...
+        </div>
+
+        <!-- PHYSICAL TOUCH PROMPT -->
+        <div id="facPresenceBox" class="presence-touch-card" style="display:none;">
+          <strong style="color:#92400e;">👉 TOUCH PIN D4 (TOUCH0) ON ESP32 BOARD</strong>
+          <p style="color:#b45309; font-size:0.8rem; margin-top:4px; font-weight:600;">
+            Please touch Pin D4 on your faculty token to physically authorize the attendance lock.
+          </p>
+        </div>
+
+        <!-- SIMULATOR TOGGLE -->
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; font-size:0.82rem; background:#f9fafb; padding:10px 14px; border-radius:6px; border:1px solid #e5e7eb;">
+          <input type="checkbox" id="chkFacEmulation" checked onchange="toggleFacEmulation(this.checked)">
+          <label for="chkFacEmulation" style="cursor:pointer; font-weight:600; color:#374151;">
+            Virtual PUF Mode (Simulate Physical Board)
+          </label>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <button id="btnSignAttendance" class="btn-login-submit" style="flex:1;" onclick="executeFacultySigning()">
+            Sign &amp; Register in Database
+          </button>
+          <button class="hitam-btn hitam-btn-secondary" style="padding:10px 14px;" onclick="closeFacultyModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/web_serial.js"></script>
+  <script>
+    // Pre-configured 4 Faculty profiles
+    const FACULTY_DIRECTORY = [
+      { id: 2, emp_id: "FAC-ECE-101", name: "Dr. K. Ramesh (Professor & HOD, ECE)", token: "ESP32-SENTINEL-FAC01", defaultSubject: "Hardware Security & Cryptography" },
+      { id: 3, emp_id: "FAC-ECE-102", name: "Dr. P. Sunitha (Associate Professor, ECE)", token: "ESP32-SENTINEL-FAC02", defaultSubject: "Embedded Systems & IoT" },
+      { id: 4, emp_id: "FAC-ECE-103", name: "Dr. V. Rajesh (Associate Professor, ECE)", token: "ESP32-SENTINEL-FAC03", defaultSubject: "VLSI Design & Testing" },
+      { id: 5, emp_id: "FAC-ECE-104", name: "Dr. M. Anitha (Assistant Professor, ECE)", token: "ESP32-SENTINEL-FAC04", defaultSubject: "Wireless & Cellular Comms" },
+    ];
+
+    let currentFaculty = FACULTY_DIRECTORY[0];
+    let rosterData = [];
+    window.sentinelBridge.isEmulationMode = true;
+
+    // Load active session user if present
+    const sessionUser = JSON.parse(sessionStorage.getItem("sentinel_user") || "null");
+    if (sessionUser && sessionUser.role === "faculty") {
+      const match = FACULTY_DIRECTORY.find(f => f.emp_id === sessionUser.roll_or_emp_id || f.id === sessionUser.id);
+      if (match) currentFaculty = match;
+    }
+
+    function syncFacultyUI() {
+      document.getElementById("facDisplayGreeting").innerText = `WELCOME: ${currentFaculty.name}`;
+      document.getElementById("facDisplayToken").innerText = `TOKEN: ${currentFaculty.token}`;
+      document.getElementById("facDisplayEmpId").innerText = currentFaculty.emp_id;
+      document.getElementById("tokenFooterId").innerText = currentFaculty.token;
+      document.getElementById("modalFacTokenId").innerText = currentFaculty.token;
+      document.getElementById("selSubject").value = currentFaculty.defaultSubject;
+
+      // Update switcher chips
+      document.querySelectorAll(".eval-chip").forEach((c, idx) => {
+        c.classList.toggle("active", FACULTY_DIRECTORY[idx].emp_id === currentFaculty.emp_id);
+      });
+
+      window.sentinelBridge.setDeviceId(currentFaculty.token);
+    }
+
+    function switchFacultyContext(facNum) {
+      currentFaculty = FACULTY_DIRECTORY[facNum - 1];
+      syncFacultyUI();
+      loadRoster();
+      loadHistory();
+    }
+
+    function showTab(tab) {
+      document.getElementById("btnTabRoster").classList.toggle("active", tab === "roster");
+      document.getElementById("btnTabHistory").classList.toggle("active", tab === "history");
+      document.getElementById("viewRoster").style.display = tab === "roster" ? "block" : "none";
+      document.getElementById("viewHistory").style.display = tab === "history" ? "block" : "none";
+
+      if (tab === "history") {
+        loadHistory();
+      }
+    }
+
+    async function loadRoster() {
+      const branch = document.getElementById("selBranch").value;
+      const section = document.getElementById("selYearSection").value;
+      const tbody = document.getElementById("rosterTbody");
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:24px;">Fetching live students from database...</td></tr>`;
+
+      try {
+        const resp = await fetch(`/api/faculty/roster?branch=${branch}`);
+        const data = await resp.json();
+        rosterData = data.students.map(s => ({
+          student_id: s.id,
+          roll_no: s.roll_or_emp_id,
+          name: s.name,
+          percentage: s.percentage,
+          shortage_warning: s.shortage_warning,
+          status: "PRESENT"
+        }));
+        renderRoster();
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626; padding:24px;">Failed to load roster from backend.</td></tr>`;
+      }
+    }
+
+    function renderRoster() {
+      const tbody = document.getElementById("rosterTbody");
+      tbody.innerHTML = "";
+
+      let presentCount = 0;
+
+      rosterData.forEach((s, idx) => {
+        if (s.status === "PRESENT") presentCount++;
+        const isLow = s.percentage < 75.0;
+
+        tbody.innerHTML += `
+          <tr>
+            <td>${idx + 1}</td>
+            <td><strong>${s.roll_no}</strong></td>
+            <td>${s.name}</td>
+            <td>
+              <span class="hitam-badge ${isLow ? 'hitam-badge-danger' : 'hitam-badge-success'}">
+                ${s.percentage}% ${isLow ? '(Shortage Alert)' : ''}
+              </span>
+            </td>
+            <td style="text-align:center;">
+              <button class="status-toggle-btn ${s.status === 'PRESENT' ? 'present' : 'absent'}"
+                      onclick="toggleStudentStatus(${idx})">
+                ${s.status}
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const total = rosterData.length;
+      const pct = total > 0 ? Math.round((presentCount / total) * 100) : 0;
+      document.getElementById("counterText").innerText = `Present: ${presentCount} / ${total} (${pct}%)`;
+    }
+
+    function toggleStudentStatus(idx) {
+      rosterData[idx].status = rosterData[idx].status === "PRESENT" ? "ABSENT" : "PRESENT";
+      renderRoster();
+    }
+
+    function markAll(status) {
+      rosterData.forEach(s => s.status = status);
+      renderRoster();
+    }
+
+    async function loadHistory() {
+      const tbody = document.getElementById("historyTbody");
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px;">Querying database for attested sessions...</td></tr>`;
+
+      try {
+        const resp = await fetch(`/api/faculty/history?faculty_id=${currentFaculty.id}`);
+        const data = await resp.json();
+        
+        if (!data.sessions || data.sessions.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#6b7280;">No attendance sessions found for this faculty member yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = "";
+        data.sessions.forEach(s => {
+          const sigSnippet = s.hardware_signature ? (s.hardware_signature.substring(0, 20) + "...") : "NOT_SIGNED";
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${s.session_id}</strong></td>
+              <td>${s.session_date} &bull; Period ${s.period}</td>
+              <td>${s.subject}</td>
+              <td><strong>${s.total_present}</strong> / ${s.total_students}</td>
+              <td><span class="active-token-pill" style="font-size:0.7rem; padding:2px 8px;">${s.device_id || currentFaculty.token}</span></td>
+              <td>
+                <span class="hitam-badge hitam-badge-success" title="${s.hardware_signature}">
+                  🔒 Verified: ${sigSnippet}
+                </span>
+              </td>
+            </tr>
+          `;
+        });
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#dc2626; padding:20px;">Failed to fetch history.</td></tr>`;
+      }
+    }
+
+    function openFacultySignatureModal() {
+      document.getElementById("facultyModal").classList.add("active");
+      
+      // Calculate preview of the attendance digest
+      const branch = document.getElementById("selBranch").value;
+      const subject = document.getElementById("selSubject").value;
+      const period = document.getElementById("selPeriod").value;
+      const dateStr = new Date().toISOString().split("T")[0];
+      const presentStudentIds = rosterData.filter(r => r.status === "PRESENT").map(r => r.student_id).sort();
+
+      const previewInput = `PREVIEW:${currentFaculty.id}:${subject}:${dateStr}:${period}:${presentStudentIds.join(",")}`;
+      document.getElementById("digestBox").innerText = `Payload: ${previewInput}\nToken Required: ${currentFaculty.token}`;
+    }
+
+    function closeFacultyModal() {
+      document.getElementById("facultyModal").classList.remove("active");
+    }
+
+    function toggleFacEmulation(checked) {
+      window.sentinelBridge.isEmulationMode = checked;
+      const statusText = document.getElementById("facUsbStatus");
+      if (checked) {
+        statusText.innerText = "Virtual Silicon PUF Core Active";
+        document.getElementById("facPulse").classList.add("connected");
+      } else {
+        statusText.innerText = "Physical ESP32 Hardware Port Selected";
+        document.getElementById("facPulse").classList.remove("connected");
+      }
+    }
+
+    async function executeFacultySigning() {
+      const btn = document.getElementById("btnSignAttendance");
+      const statusText = document.getElementById("facUsbStatus");
+      const presenceBox = document.getElementById("facPresenceBox");
+
+      btn.disabled = true;
+      btn.innerText = "Attesting Session Payload...";
+
+      window.sentinelBridge.onStatusChange = (status, msg) => {
+        statusText.innerText = msg;
+      };
+
+      window.sentinelBridge.onPromptPresence = (prompting) => {
+        presenceBox.style.display = prompting ? "block" : "none";
+      };
+
+      try {
+        const branch = document.getElementById("selBranch").value;
+        const subject = document.getElementById("selSubject").value;
+        const period = document.getElementById("selPeriod").value;
+        const dateStr = new Date().toISOString().split("T")[0];
+
+        // 1. Fetch challenge nonce from server for this faculty member
+        const challengeResp = await fetch(`/api/auth/challenge?user_id=${currentFaculty.id}`);
+        const cData = await challengeResp.json();
+        const nonce = cData.nonce;
+
+        // 2. Hardware sign with SentinelKey USB
+        window.sentinelBridge.setDeviceId(currentFaculty.token);
+        const signature = await window.sentinelBridge.executeChallenge(nonce, currentFaculty.token);
+
+        // 3. Post to backend with attendance roster and signature
+        const submitResp = await fetch("/api/faculty/submit-attendance", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            faculty_id: currentFaculty.id,
+            branch: branch,
+            year: "IV",
+            section: "A",
+            subject: subject,
+            period: period,
+            session_date: dateStr,
+            device_id: currentFaculty.token,
+            records: rosterData.map(r => ({ student_id: r.student_id, status: r.status })),
+            hardware_signature: signature
+          })
+        });
+
+        const resData = await submitResp.json();
+
+        if (submitResp.ok && resData.status === "SUCCESS") {
+          closeFacultyModal();
+          alert(`✓ ATTENDANCE ATTESTATION SUCCESSFUL!\n\nSession ID: ${resData.session_id}\nPresent Count: ${resData.total_present}/${resData.total_students}\nToken: ${resData.device_id}\nDigest: ${resData.attendance_digest.substring(0, 24)}...\nSignature: ${signature.substring(0, 24)}...\n\nAttendance locked permanently in the database.`);
+          loadRoster();
+        } else {
+          throw new Error(resData.error || "Submission failed.");
+        }
+      } catch (err) {
+        alert("Attestation Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Sign & Register in Database";
+      }
+    }
+
+    // Initialize UI
+    syncFacultyUI();
+    loadRoster();
+  </script>
+</body>
+</html>
+

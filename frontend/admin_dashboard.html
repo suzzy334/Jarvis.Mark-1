@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HITAM Administrator Portal | SentinelKey Token Management &amp; Hardware MAC Desk</title>
+  <link rel="stylesheet" href="css/hitam_theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    h1, h2, h3, h4, .brand-title {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .admin-stat-card {
+      background: white;
+      border: 1px solid #dcdcdc;
+      border-radius: 8px;
+      padding: 16px 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .admin-stat-card .val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--hitam-primary);
+      margin-top: 4px;
+      font-family: 'Outfit', sans-serif;
+    }
+    .admin-stat-card .lbl {
+      font-size: 0.76rem;
+      color: var(--hitam-text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .hitam-tree-logo {
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="hitam-header">
+    <div class="hitam-brand-group">
+      <div class="hitam-logo-emblem" style="background:transparent; border:none; padding:0;">
+        <!-- HITAM Tree/Brain Emblem -->
+        <svg class="hitam-tree-logo" viewBox="0 0 54 54" width="48" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="27" cy="27" r="26" fill="#FFFFFF" stroke="#4A9B3E" stroke-width="1.8"/>
+          <!-- Trunk & Roots -->
+          <path d="M26 43 L28 43 L27.5 31 C29 29 32 26 35 25 M26.5 31 C25 29 22 26 19 25" stroke="#1B5E20" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Left Brain Hemisphere (Nature Foliage) -->
+          <path d="M26 12 C23 11 19 12 17 15 C15 18 16 22 17 25 C16 28 18 31 22 31 C25 31 26 28 26 26" fill="#4A9B3E" fill-opacity="0.9" stroke="#1B5E20" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- Right Brain Hemisphere (Engineering Gyri) -->
+          <path d="M28 12 C31 11 35 12 37 15 C39 18 38 22 37 25 C38 28 36 31 32 31 C29 31 28 28 28 26" fill="#2E7D32" fill-opacity="0.95" stroke="#0D3314" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- Synaptic/Neural Nodes & Leaves -->
+          <path d="M21 16 Q24 19 26 22 M33 16 Q30 19 28 22" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="20" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="34" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="14" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="22" r="1.5" fill="#D4AF37"/>
+          <!-- Ground Base -->
+          <path d="M18 43 Q27 41 36 43" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="hitam-title-block">
+        <div style="display:flex; align-items:baseline; gap:8px;">
+          <h1 style="margin:0; font-size:1.35rem; font-weight:800; letter-spacing:0.5px; text-transform:uppercase;">HITAM</h1>
+          <span style="font-size:0.75rem; color:#d4af37; font-weight:700; letter-spacing:1px; text-transform:uppercase;">Autonomous</span>
+        </div>
+        <p style="margin:2px 0 0 0; font-size:0.82rem; color:#e8f5e9;">Hyderabad Institute of Technology and Management | IT Cell &amp; SentinelKey Security Admin</p>
+      </div>
+    </div>
+    <div class="hitam-accreditation-tag">
+      ⚙️ Administrator Root Access (NAAC 'A+')
+    </div>
+  </header>
+
+  <!-- USER BAR -->
+  <div class="hitam-user-bar">
+    <div>ADMINISTRATOR: Dr. C. R. Rao (Principal &amp; Exam Branch)</div>
+    <div>
+      <span class="hitam-badge hitam-badge-success" style="margin-right: 12px;">SYSTEM INTEGRITY: 100% SECURE</span>
+      <a href="login.html" onclick="sessionStorage.clear()">Logout</a>
+    </div>
+  </div>
+
+  <div style="max-width: 1400px; margin: 20px auto; padding: 0 20px;">
+
+    <!-- STATS GRID -->
+    <div class="admin-stats-grid">
+      <div class="admin-stat-card">
+        <div class="lbl">Active Hardware Tokens</div>
+        <div class="val" id="statActive">--</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="lbl">Revoked / Lost Tokens</div>
+        <div class="val" id="statRevoked" style="color:var(--hitam-danger);">--</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="lbl">Enrolled Hardware Accounts</div>
+        <div class="val" id="statUsers">--</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="lbl">Asymmetric ECDSA Nonce Replays Blocked</div>
+        <div class="val" style="color:#2e7d32;">100% Protected (0 Leaks)</div>
+      </div>
+    </div>
+
+    <!-- DEVICE REGISTRY & TOKEN MANAGEMENT -->
+    <div class="hitam-main-content" style="margin-bottom: 24px;">
+      <div class="hitam-section-title">
+        <span>SENTINELKEY HARDWARE TOKEN &amp; MAC ADDRESS REGISTRY</span>
+        <button class="hitam-btn" onclick="openEnrollModal()">+ Enroll New Hardware Token</button>
+      </div>
+
+      <table class="hitam-table">
+        <thead>
+          <tr>
+            <th>Device ID</th>
+            <th>Hardware MAC Address</th>
+            <th>Owner / Faculty</th>
+            <th>Roll / Emp ID</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Enrolled Date</th>
+            <th style="text-align:center;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="deviceTbody">
+          <tr>
+            <td colspan="8" style="text-align:center; padding:20px;">Loading registered tokens...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LOST TOKEN RESOLUTION & EMERGENCY OTP DESK -->
+    <div class="hitam-main-content" style="margin-bottom: 24px;">
+      <div class="hitam-section-title">
+        <span>LOST TOKEN RESOLUTION &amp; EMERGENCY ACCESS DESK</span>
+        <span style="font-size:0.8rem; color:var(--hitam-text-muted); font-weight:normal;">
+          Resolves: "What if a faculty member loses their USB?" — Issues timed institutional email OTPs
+        </span>
+      </div>
+
+      <div style="background:#e8f5e9; padding:12px 16px; border-radius:6px; margin-bottom:16px; font-size:0.82rem; border-left:4px solid var(--hitam-primary);">
+        <strong>Protocol Standard Operating Procedure (SOP):</strong> When a faculty member reports a lost USB, the Administrator revokes the physical token in the table above, then issues an Emergency Access OTP dispatched to their official college institutional email (e.g. <code>kramesh@hitam.org</code>), granting temporary 24-hour access until a new ESP32 board is characterized and issued.
+      </div>
+
+      <table class="hitam-table">
+        <thead>
+          <tr>
+            <th>Request ID</th>
+            <th>User</th>
+            <th>Roll / Email</th>
+            <th>Reason Reported</th>
+            <th>Status</th>
+            <th>Issued OTP</th>
+            <th style="text-align:center;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="recoveryTbody">
+          <tr>
+            <td colspan="7" style="text-align:center; padding:20px;">No pending recovery requests.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SECURITY AUDIT LOGS -->
+    <div class="hitam-main-content">
+      <div class="hitam-section-title">
+        <span>SECURITY AUDIT TRAIL (CRYPTOGRAPHIC &amp; ACCESS EVENTS)</span>
+        <button class="hitam-btn hitam-btn-outline" onclick="loadAuditLogs()">Refresh Logs</button>
+      </div>
+
+      <table class="hitam-table">
+        <thead>
+          <tr>
+            <th style="width:180px;">Timestamp</th>
+            <th style="width:220px;">Security Action</th>
+            <th>Actor</th>
+            <th>Details</th>
+            <th style="width:120px;">IP Address</th>
+          </tr>
+        </thead>
+        <tbody id="auditTbody">
+          <tr>
+            <td colspan="5" style="text-align:center; padding:20px;">Loading security logs...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- REASSIGN TOKEN & MAC MODAL -->
+  <div class="sentinel-modal-backdrop" id="reassignModal">
+    <div class="sentinel-modal-card" style="max-width: 520px;">
+      <div class="sentinel-modal-header">
+        <h3>⇄ Reassign SentinelKey Hardware Token</h3>
+        <button onclick="closeReassignModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:white;">&times;</button>
+      </div>
+      <div class="sentinel-modal-body" style="padding: 24px;">
+        <div style="background:#e8f5e9; padding:12px; border-radius:6px; margin-bottom:16px; font-size:0.82rem; border-left:4px solid var(--hitam-primary);">
+          Assign an enrolled ESP32 hardware device (and its factory silicon MAC address) to a different faculty member. This automatically updates cryptographic device ownership while enforcing 1-to-1 hardware binding.
+        </div>
+        <div class="hitam-form-group">
+          <label class="hitam-form-label">DEVICE IDENTIFIER</label>
+          <input class="hitam-input" type="text" id="reassignDeviceId" readonly style="background:#f3f4f6; font-weight:700;">
+        </div>
+        <div class="hitam-form-group">
+          <label class="hitam-form-label">HARDWARE MAC ADDRESS</label>
+          <input class="hitam-input" type="text" id="reassignMacAddress" placeholder="e.g. 24:6F:28:B4:7A:10" style="font-family:monospace; text-transform:uppercase;">
+          <small style="color:var(--hitam-text-muted); font-size:0.74rem;">Physical ESP32 factory eFuse MAC address.</small>
+        </div>
+        <div class="hitam-form-group">
+          <label class="hitam-form-label">TARGET FACULTY MEMBER</label>
+          <select class="hitam-input" id="reassignTargetFaculty">
+            <option value="">Loading faculty members...</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button class="hitam-btn" style="flex:1; justify-content:center;" onclick="submitReassign()">
+            Confirm Reassignment
+          </button>
+          <button class="hitam-btn hitam-btn-secondary" onclick="closeReassignModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RE-ENROLL MODAL -->
+  <div class="sentinel-modal-backdrop" id="enrollModal">
+    <div class="sentinel-modal-card">
+      <div class="sentinel-modal-header">
+        <h3>🔑 Enroll Replacement SentinelKey Token</h3>
+        <button onclick="closeEnrollModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:white;">&times;</button>
+      </div>
+      <div class="sentinel-modal-body">
+        <div class="hitam-form-group">
+          <label class="hitam-form-label">FACULTY MEMBER</label>
+          <select class="hitam-input" id="enrollFacultySelect">
+            <option value="">-- Select Faculty --</option>
+          </select>
+        </div>
+        <div class="hitam-form-group">
+          <label class="hitam-form-label">NEW ESP32 DEVICE ID</label>
+          <input class="hitam-input" type="text" id="enrollDeviceId" value="ESP32-SENTINEL-NEW01">
+        </div>
+        <div class="hitam-form-group">
+          <label class="hitam-form-label">HARDWARE MAC ADDRESS (OPTIONAL)</label>
+          <input class="hitam-input" type="text" id="enrollMacAddress" placeholder="e.g. 24:6F:28:B4:7A:55" style="font-family:monospace; text-transform:uppercase;">
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="hitam-btn" style="flex:1; justify-content:center;" onclick="submitReEnroll()">
+            Pair Token &amp; Save to Database
+          </button>
+          <button class="hitam-btn hitam-btn-secondary" onclick="closeEnrollModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let facultyCache = [];
+
+    async function loadFacultyList() {
+      try {
+        const resp = await fetch("/api/admin/faculty-list");
+        const data = await resp.json();
+        facultyCache = data.faculty || [];
+
+        const reassignSelect = document.getElementById("reassignTargetFaculty");
+        reassignSelect.innerHTML = '<option value="">-- Select Target Faculty Member --</option>';
+
+        const enrollSelect = document.getElementById("enrollFacultySelect");
+        enrollSelect.innerHTML = '<option value="">-- Select Faculty Member --</option>';
+
+        facultyCache.forEach(f => {
+          const opt = `<option value="${f.id}">${f.name} (${f.roll_or_emp_id}) - ${f.department}</option>`;
+          reassignSelect.innerHTML += opt;
+          enrollSelect.innerHTML += opt;
+        });
+      } catch (err) {
+        console.error("Failed to load faculty list:", err);
+      }
+    }
+
+    async function loadAdminData() {
+      try {
+        const resp = await fetch("/api/admin/devices");
+        const data = await resp.json();
+
+        // 1. Devices Table
+        const devTbody = document.getElementById("deviceTbody");
+        devTbody.innerHTML = "";
+
+        let activeCount = 0;
+        let revokedCount = 0;
+
+        data.devices.forEach(d => {
+          if (d.status === "ACTIVE") activeCount++;
+          if (d.status === "REVOKED") revokedCount++;
+
+          const isRev = d.status === "REVOKED";
+          const macDisplay = d.mac_address 
+            ? `<code class="hitam-mac-badge">${d.mac_address}</code>` 
+            : `<span style="color:#9ca3af; font-size:0.75rem;">Not Registered</span>`;
+
+          devTbody.innerHTML += `
+            <tr>
+              <td><strong>${d.device_id}</strong></td>
+              <td>${macDisplay}</td>
+              <td><strong>${d.user_name}</strong></td>
+              <td><code>${d.roll_or_emp_id}</code></td>
+              <td><span class="hitam-badge">${d.role}</span></td>
+              <td>
+                <span class="hitam-badge ${isRev ? 'hitam-badge-danger' : 'hitam-badge-success'}">
+                  ${d.status}
+                </span>
+              </td>
+              <td>${d.enrolled_at}</td>
+              <td style="text-align:center; white-space:nowrap;">
+                <button class="hitam-btn hitam-btn-outline" style="padding:4px 8px; font-size:0.75rem; margin-right:4px;" onclick="openReassignModal('${d.device_id}', '${d.mac_address || ''}', ${d.user_id})">
+                  ⇄ Reassign
+                </button>
+                ${isRev ? 
+                  `<button class="hitam-btn" style="padding:4px 8px; font-size:0.75rem;" onclick="openReEnrollFor(${d.user_id})">Re-Enroll</button>` :
+                  `<button class="hitam-btn hitam-btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="revokeDevice('${d.device_id}')">Revoke</button>
+                   <button class="hitam-btn" style="padding:4px 8px; font-size:0.75rem; margin-left:4px;" onclick="issueEmergencyOtp(${d.user_id})">Issue OTP</button>`
+                }
+              </td>
+            </tr>
+          `;
+        });
+
+        document.getElementById("statActive").innerText = activeCount;
+        document.getElementById("statRevoked").innerText = revokedCount;
+        document.getElementById("statUsers").innerText = data.devices.length;
+
+        // 2. Recovery Requests Table
+        const recTbody = document.getElementById("recoveryTbody");
+        recTbody.innerHTML = "";
+        if (!data.recovery_requests || data.recovery_requests.length === 0) {
+          recTbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:15px; color:var(--hitam-text-muted);">No recovery requests pending.</td></tr>`;
+        } else {
+          data.recovery_requests.forEach(r => {
+            recTbody.innerHTML += `
+              <tr>
+                <td>#REQ-${r.id}</td>
+                <td><strong>${r.user_name}</strong></td>
+                <td>${r.roll_or_emp_id}</td>
+                <td>${r.reason}</td>
+                <td><span class="hitam-badge hitam-badge-warning">${r.status}</span></td>
+                <td><code>${r.otp_code || 'Not Yet Generated'}</code></td>
+                <td style="text-align:center;">
+                  <button class="hitam-btn" style="padding:4px 10px; font-size:0.75rem;" onclick="issueEmergencyOtp(${r.user_id})">
+                    Dispatch 24h OTP
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+        }
+
+      } catch (err) {
+        console.error("Admin error:", err);
+      }
+    }
+
+    async function loadAuditLogs() {
+      try {
+        const resp = await fetch("/api/admin/audit-logs");
+        const data = await resp.json();
+        const tbody = document.getElementById("auditTbody");
+        tbody.innerHTML = "";
+
+        data.logs.forEach(l => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${l.timestamp}</td>
+              <td><strong>${l.action}</strong></td>
+              <td>${l.actor_name ? `${l.actor_name} (${l.roll_or_emp_id})` : 'System'}</td>
+              <td>${l.details || '-'}</td>
+              <td><code>${l.ip_address}</code></td>
+            </tr>
+          `;
+        });
+      } catch (e) {
+        console.error("Audit log error:", e);
+      }
+    }
+
+    function openReassignModal(deviceId, mac, currentUserId) {
+      document.getElementById("reassignDeviceId").value = deviceId;
+      document.getElementById("reassignMacAddress").value = mac || "";
+      const select = document.getElementById("reassignTargetFaculty");
+      if (select && currentUserId) {
+        select.value = currentUserId;
+      }
+      document.getElementById("reassignModal").classList.add("active");
+    }
+
+    function closeReassignModal() {
+      document.getElementById("reassignModal").classList.remove("active");
+    }
+
+    async function submitReassign() {
+      const deviceId = document.getElementById("reassignDeviceId").value;
+      const mac = document.getElementById("reassignMacAddress").value.trim();
+      const targetUserId = document.getElementById("reassignTargetFaculty").value;
+
+      if (!deviceId || !targetUserId) {
+        alert("Please select a target faculty member.");
+        return;
+      }
+
+      try {
+        const resp = await fetch("/api/admin/reassign-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            device_id: deviceId,
+            mac_address: mac,
+            target_user_id: parseInt(targetUserId)
+          })
+        });
+        const d = await resp.json();
+        if (resp.ok) {
+          alert(`✓ ${d.message}`);
+          closeReassignModal();
+          loadAdminData();
+          loadAuditLogs();
+        } else {
+          alert("Reassignment failed: " + (d.error || "Unknown error"));
+        }
+      } catch (e) {
+        alert("Network error while submitting reassignment.");
+      }
+    }
+
+    async function revokeDevice(deviceId) {
+      if (!confirm(`Are you sure you want to REVOKE ${deviceId}? This device will be permanently blacklisted until re-enrolled.`)) return;
+
+      try {
+        const resp = await fetch("/api/admin/revoke-device", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ device_id: deviceId })
+        });
+        const d = await resp.json();
+        alert(d.message);
+        loadAdminData();
+        loadAuditLogs();
+      } catch (err) {
+        alert("Failed to revoke device.");
+      }
+    }
+
+    async function issueEmergencyOtp(userId) {
+      try {
+        const resp = await fetch("/api/admin/issue-recovery-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId })
+        });
+        const d = await resp.json();
+        if (resp.ok) {
+          alert(`✓ Emergency Access Code Generated!\n\nTarget User: ${d.user_name}\nOTP Code: ${d.otp_code}\n${d.delivery_channel}\nValidity: 24 Hours`);
+          loadAdminData();
+          loadAuditLogs();
+        } else {
+          alert("Error: " + d.error);
+        }
+      } catch (err) {
+        alert("Failed to issue OTP.");
+      }
+    }
+
+    function openEnrollModal() {
+      document.getElementById("enrollModal").classList.add("active");
+    }
+    function closeEnrollModal() {
+      document.getElementById("enrollModal").classList.remove("active");
+    }
+    function openReEnrollFor(userId) {
+      const select = document.getElementById("enrollFacultySelect");
+      if (select && userId) {
+        select.value = userId;
+      }
+      openEnrollModal();
+    }
+
+    async function submitReEnroll() {
+      const uId = document.getElementById("enrollFacultySelect").value;
+      const devId = document.getElementById("enrollDeviceId").value.trim();
+      const mac = document.getElementById("enrollMacAddress").value.trim();
+      if (!uId || !devId) {
+        alert("Please select a Faculty member and specify Device ID.");
+        return;
+      }
+      try {
+        const resp = await fetch("/api/admin/re-enroll", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: parseInt(uId), device_id: devId })
+        });
+        const d = await resp.json();
+        if (resp.ok) {
+          // If MAC is provided, update it via reassign
+          if (mac) {
+            await fetch("/api/admin/reassign-token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ device_id: devId, mac_address: mac, target_user_id: parseInt(uId) })
+            });
+          }
+          alert(`✓ New Token ${d.device_id} successfully enrolled and linked!`);
+          closeEnrollModal();
+          loadAdminData();
+          loadAuditLogs();
+        } else {
+          alert("Re-enrollment failed: " + d.error);
+        }
+      } catch (e) {
+        alert("Network error.");
+      }
+    }
+
+    // Initialize data
+    loadFacultyList();
+    loadAdminData();
+    loadAuditLogs();
+  </script>
+</body>
+</html>

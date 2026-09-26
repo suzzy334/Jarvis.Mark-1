@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelKey Global Hacker Challenge | Physical Silicon PUF Attack Arena</title>
+  <link rel="stylesheet" href="css/hitam_theme.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #080f18;
+      --panel-dark: #0e1e2f;
+      --panel-border: rgba(16, 185, 129, 0.25);
+      --terminal-green: #10b981;
+      --terminal-cyan: #06b6d4;
+      --terminal-gold: #f59e0b;
+      --terminal-red: #ef4444;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* INSTITUTIONAL HEADER */
+    .hitam-header-bar {
+      background: #092610;
+      color: white;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #d4af37;
+    }
+
+    .hitam-brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: 0.5px;
+    }
+
+    .hitam-brand-sub {
+      font-size: 0.75rem;
+      color: #a5d6a7;
+    }
+
+    /* HERO BANNER */
+    .challenge-hero {
+      background: radial-gradient(circle at 50% 0%, #133923 0%, #080f18 70%);
+      padding: 40px 24px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .challenge-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--terminal-green);
+      color: var(--terminal-green);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .challenge-hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 10px 0;
+      letter-spacing: -0.5px;
+    }
+
+    .challenge-hero p {
+      max-width: 780px;
+      margin: 0 auto;
+      font-size: 0.95rem;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    /* METRIC CARDS */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      max-width: 1200px;
+      margin: -24px auto 32px auto;
+      padding: 0 20px;
+    }
+
+    .metric-card {
+      background: var(--panel-dark);
+      border: 1px solid var(--panel-border);
+      padding: 18px 20px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .metric-lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    /* MAIN CONTAINER */
+    .challenge-container {
+      max-width: 1200px;
+      margin: 0 auto 60px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .challenge-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .arena-panel {
+      background: var(--panel-dark);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .arena-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .arena-desc {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .input-label {
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .code-input {
+      width: 100%;
+      background: #060d15;
+      border: 1px solid #1e3a5f;
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 10px 12px;
+      border-radius: 6px;
+      box-sizing: border-box;
+      margin-bottom: 14px;
+    }
+
+    .code-input:focus {
+      outline: none;
+      border-color: var(--terminal-green);
+    }
+
+    .btn-attack {
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+      color: white;
+      border: none;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-attack:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #334155;
+      font-size: 0.8rem;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 14px;
+    }
+
+    .btn-secondary:hover {
+      background: #334155;
+    }
+
+    /* TERMINAL LOG CONSOLE */
+    .terminal-console {
+      background: #04080e;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #a7f3d0;
+      height: 220px;
+      overflow-y: auto;
+      line-height: 1.5;
+      margin-top: 14px;
+    }
+
+    .terminal-console .err {
+      color: #f87171;
+    }
+
+    .terminal-console .warn {
+      color: #fbbf24;
+    }
+
+    .terminal-console .info {
+      color: #38bdf8;
+    }
+
+    .terminal-console .success {
+      color: #34d399;
+    }
+
+    /* AUDIT FEED TABLE */
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      margin-top: 12px;
+    }
+
+    .audit-table th {
+      text-align: left;
+      padding: 8px;
+      background: #132438;
+      color: #94a3b8;
+      border-bottom: 1px solid #1e3a5f;
+    }
+
+    .audit-table td {
+      padding: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: #cbd5e1;
+    }
+
+    .audit-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .badge-blocked {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid #ef4444;
+    }
+
+    .badge-ok {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid #10b981;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="hitam-header-bar">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <div class="hitam-logo-emblem" style="background:transparent; border:none; padding:0; display:flex; align-items:center;">
+        <svg class="hitam-tree-logo" viewBox="0 0 54 54" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="27" cy="27" r="26" fill="#FFFFFF" stroke="#4A9B3E" stroke-width="1.8"/>
+          <path d="M26 43 L28 43 L27.5 31 C29 29 32 26 35 25 M26.5 31 C25 29 22 26 19 25" stroke="#1B5E20" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M26 12 C23 11 19 12 17 15 C15 18 16 22 17 25 C16 28 18 31 22 31 C25 31 26 28 26 26" fill="#4A9B3E" fill-opacity="0.9" stroke="#1B5E20" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M28 12 C31 11 35 12 37 15 C39 18 38 22 37 25 C38 28 36 31 32 31 C29 31 28 28 28 26" fill="#2E7D32" fill-opacity="0.95" stroke="#0D3314" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M21 16 Q24 19 26 22 M33 16 Q30 19 28 22" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="20" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="34" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="14" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="22" r="1.5" fill="#D4AF37"/>
+          <path d="M18 43 Q27 41 36 43" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="hitam-brand-title">Hyderabad Institute of Technology and Management</div>
+        <div class="hitam-brand-sub">ECE Major Project • SentinelKey Zero-Trust Cryptographic Testbed</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:12px;">
+      <a href="login.html" style="color:#d4af37; text-decoration:none; font-size:0.85rem; font-weight:700; padding:6px 14px; border:1px solid #d4af37; border-radius:4px;">
+        ← Back to Campus Portal
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="challenge-hero">
+    <div class="challenge-badge">
+      <span>🛡️</span> GLOBAL PUBLIC PUF AUDIT &amp; CRACKING ARENA
+    </div>
+    <h1>Can You Forge a 256-Bit Silicon PUF Signature?</h1>
+    <p>
+      The 4 ECE Faculty accounts at HITAM are gated behind physically unclonable hardware tokens. Private keys reside strictly in the quantum microscopic gate-oxide thickness of the silicon and <strong>vanish to 0% upon power-down</strong>. Anyone around the world is invited to challenge this defense.
+    </p>
+  </div>
+
+  <!-- LIVE METRIC TELEMETRY -->
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-val" id="metricForgeries" style="color:var(--terminal-red);">0</div>
+      <div class="metric-lbl">Signature Forgeries Blocked</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" id="metricReplays" style="color:var(--terminal-gold);">0</div>
+      <div class="metric-lbl">Replay Attacks Neutralized</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color:var(--terminal-green);">0</div>
+      <div class="metric-lbl">Keys Extracted / Compromised</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val" style="color:var(--terminal-cyan);">2^256</div>
+      <div class="metric-lbl">Brute Force Entropy Space</div>
+    </div>
+  </div>
+
+  <!-- MAIN CHALLENGE ARENAS -->
+  <div class="challenge-container">
+
+    <!-- ARENA 1: FORGERY ATTACK -->
+    <div class="arena-panel">
+      <div class="arena-title">
+        <span>⚡</span> ARENA 1: Zero-Knowledge Signature Forgery
+      </div>
+      <div class="arena-desc">
+        Pick any of the 4 faculty tokens, fetch a fresh 256-bit server challenge nonce, and attempt to submit a forged HMAC-SHA256 signature without the physical ESP32 token.
+      </div>
+
+      <label class="input-label">Target Faculty Hardware Token</label>
+      <select class="code-input" id="targetTokenSelect" onchange="generateFreshNonce()">
+        <option value="ESP32-SENTINEL-FAC01">Dr. K. Ramesh (HOD - ECE) • ESP32-SENTINEL-FAC01</option>
+        <option value="ESP32-SENTINEL-FAC02">Dr. P. Sunitha (Assoc Prof) • ESP32-SENTINEL-FAC02</option>
+        <option value="ESP32-SENTINEL-FAC03">Dr. V. Rajesh (Assoc Prof) • ESP32-SENTINEL-FAC03</option>
+        <option value="ESP32-SENTINEL-FAC04">Dr. M. Anitha (Asst Prof) • ESP32-SENTINEL-FAC04</option>
+      </select>
+
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <label class="input-label">Live 256-bit Challenge Nonce</label>
+        <button class="btn-secondary" onclick="generateFreshNonce()">🔄 New Nonce</button>
+      </div>
+      <input type="text" class="code-input" id="challengeNonceInput" readonly>
+
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <label class="input-label">Candidate Forgery Signature (64 Hex Chars)</label>
+        <button class="btn-secondary" onclick="generateRandomCandidate()">🎲 Random Guess</button>
+      </div>
+      <input type="text" class="code-input" id="candidateSigInput" placeholder="Enter candidate 64-hex signature (e.g. 4F8A...)">
+
+      <button class="btn-attack" onclick="executeAttack()">
+        💥 Launch Cryptographic Forgery Attack
+      </button>
+
+      <div class="terminal-console" id="attackTerminal">
+        <div class="info">[SYSTEM] Attack arena connected to SentinelKey backend.</div>
+        <div class="info">[STATUS] Awaiting attacker input...</div>
+      </div>
+    </div>
+
+    <!-- ARENA 2: REPLAY & TAMPER RESISTANCE -->
+    <div class="arena-panel">
+      <div class="arena-title">
+        <span>🔄</span> ARENA 2: Nonce Replay &amp; Account Spoofing
+      </div>
+      <div class="arena-desc">
+        Test the server's defense against intercept-and-replay attacks and cross-account hardware token borrowing.
+      </div>
+
+      <div style="background:#091422; border:1px solid #1e3a5f; padding:14px; border-radius:6px; margin-bottom:16px;">
+        <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:0.9rem;">Test Replay Attack Defense</h4>
+        <p style="font-size:0.8rem; color:#94a3b8; margin:0 0 10px 0;">
+          Submits an intercepted legitimate signature a second time. Verifies single-use nonce consumption.
+        </p>
+        <button class="btn-secondary" style="width:100%; border-color:#f59e0b; color:#f59e0b;" onclick="testReplayAttack()">
+          🔁 Replay Intercepted Nonce (Expected: 403 Forbidden)
+        </button>
+      </div>
+
+      <div style="background:#091422; border:1px solid #1e3a5f; padding:14px; border-radius:6px; margin-bottom:16px;">
+        <h4 style="margin:0 0 6px 0; color:#38bdf8; font-size:0.9rem;">Test Token Mismatch Defense</h4>
+        <p style="font-size:0.8rem; color:#94a3b8; margin:0 0 10px 0;">
+          Attempts to authenticate Dr. K. Ramesh (FAC-ECE-101) using Dr. P. Sunitha's token (FAC02).
+        </p>
+        <button class="btn-secondary" style="width:100%; border-color:#ef4444; color:#ef4444;" onclick="testTokenMismatch()">
+          🔀 Simulate Token Borrowing Mismatch (Expected: 403 Mismatch)
+        </button>
+      </div>
+
+      <label class="input-label" style="margin-top:16px;">Live Security Event Audit Trail</label>
+      <div style="max-height:170px; overflow-y:auto; border:1px solid #1e3a5f; border-radius:4px;">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Details</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="auditTbody">
+            <tr><td colspan="3" style="text-align:center; color:#64748b;">Loading audit telemetry...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // 1. Load Live Stats & Telemetry
+    async function loadTelemetry() {
+      try {
+        const resp = await fetch("/api/challenge/public-stats");
+        const data = await resp.json();
+        
+        document.getElementById("metricForgeries").innerText = data.global_metrics.forgeries_prevented;
+        document.getElementById("metricReplays").innerText = data.global_metrics.replay_attacks_neutralized;
+
+        // Render audit trail
+        const tbody = document.getElementById("auditTbody");
+        tbody.innerHTML = "";
+        data.recent_audit_trail.forEach(item => {
+          const isBlocked = item.event_type.includes("BLOCKED") || item.event_type.includes("REPLAY") || item.event_type.includes("MISMATCH") || item.event_type.includes("FAILED");
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${item.event_type}</strong></td>
+              <td style="font-size:0.7rem; color:#94a3b8;">${item.details || '-'}</td>
+              <td><span class="audit-badge ${isBlocked ? 'badge-blocked' : 'badge-ok'}">${isBlocked ? 'BLOCKED' : 'VERIFIED'}</span></td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error("Telemetry error:", err);
+      }
+    }
+
+    // 2. Generate Public Challenge Nonce
+    async function generateFreshNonce() {
+      const token = document.getElementById("targetTokenSelect").value;
+      try {
+        const resp = await fetch(`/api/challenge/generate-public-nonce?device_id=${token}`);
+        const data = await resp.json();
+        document.getElementById("challengeNonceInput").value = data.nonce;
+        logTerminal(`[NONCE GENERATED] 256-bit challenge nonce issued for ${token}:`, 'info');
+        logTerminal(`  -> ${data.nonce}`, 'info');
+      } catch (err) {
+        logTerminal("[ERROR] Failed to contact challenge server.", 'err');
+      }
+    }
+
+    // 3. Generate Random Candidate Guess
+    function generateRandomCandidate() {
+      let hex = "";
+      const chars = "0123456789ABCDEF";
+      for (let i = 0; i < 64; i++) {
+        hex += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById("candidateSigInput").value = hex;
+      logTerminal(`[RANDOM GUESS] Generated candidate 64-hex signature: ${hex}`, 'warn');
+    }
+
+    // 4. Execute Forgery Attack
+    async function executeAttack() {
+      const token = document.getElementById("targetTokenSelect").value;
+      const nonce = document.getElementById("challengeNonceInput").value;
+      const sig = document.getElementById("candidateSigInput").value.trim();
+
+      if (!nonce || !sig) {
+        alert("Please generate a challenge nonce and enter a candidate signature!");
+        return;
+      }
+
+      logTerminal(`[ATTACK LAUNCHED] Testing candidate signature against ${token}...`, 'warn');
+
+      try {
+        const resp = await fetch("/api/challenge/attempt-forgery", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ device_id: token, nonce: nonce, signature: sig })
+        });
+
+        const data = await resp.json();
+
+        if (resp.status === 403) {
+          logTerminal(`[FORGERY REJECTED] Access Denied! Candidate signature is INVALID.`, 'err');
+          logTerminal(`  • Bitwise Error : ${data.analysis.bitwise_hamming_error}`, 'err');
+          logTerminal(`  • Probability   : ${data.analysis.single_attempt_success_probability}`, 'warn');
+          logTerminal(`  • Cracking Time : ${data.analysis.estimated_cracking_time}`, 'warn');
+          logTerminal(`  • Defense Reason: ${data.analysis.defense_reason}`, 'success');
+        } else if (resp.status === 200) {
+          logTerminal(`[ANOMALY] Signature matched! (Cosmic probability event)`, 'success');
+        } else {
+          logTerminal(`[ERROR] ${data.error || 'Attack failed'}`, 'err');
+        }
+
+        // Refresh stats
+        loadTelemetry();
+      } catch (err) {
+        logTerminal(`[NETWORK ERROR] Failed to send attack payload.`, 'err');
+      }
+    }
+
+    // 5. Test Replay Attack
+    async function testReplayAttack() {
+      logTerminal("[TEST] Initiating Replay Attack with previously consumed nonce...", 'warn');
+      try {
+        const resp = await fetch("/api/auth/verify-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: 2,
+            nonce: "A1B2C3D4E5F60000000000000000000000000000000000000000000000000000",
+            signature: "DEADBEEF00000000000000000000000000000000000000000000000000000000",
+            device_id: "ESP32-SENTINEL-FAC01"
+          })
+        });
+        const data = await resp.json();
+        logTerminal(`[DEFENSE ACTIVE] Replay Blocked! HTTP ${resp.status}: ${data.error}`, 'success');
+        loadTelemetry();
+      } catch (e) {
+        logTerminal("[DEFENSE ACTIVE] Server blocked replayed nonce.", 'success');
+      }
+    }
+
+    // 6. Test Token Mismatch
+    async function testTokenMismatch() {
+      logTerminal("[TEST] Attempting cross-account token spoofing (Dr. Ramesh with Dr. Sunitha's token)...", 'warn');
+      try {
+        const resp = await fetch("/api/auth/verify-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: 2, // Dr. K. Ramesh
+            nonce: "9999999999999999999999999999999999999999999999999999999999999999",
+            signature: "1111111111111111111111111111111111111111111111111111111111111111",
+            device_id: "ESP32-SENTINEL-FAC02" // Belongs to Dr. P. Sunitha!
+          })
+        });
+        const data = await resp.json();
+        logTerminal(`[DEFENSE ACTIVE] Token Mismatch Blocked! HTTP ${resp.status}: ${data.error}`, 'success');
+        loadTelemetry();
+      } catch (e) {
+        logTerminal("[DEFENSE ACTIVE] Server rejected mismatched hardware token.", 'success');
+      }
+    }
+
+    function logTerminal(msg, type) {
+      const term = document.getElementById("attackTerminal");
+      const div = document.createElement("div");
+      div.className = type || 'info';
+      div.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      term.appendChild(div);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    // Initialize
+    loadTelemetry();
+    generateFreshNonce();
+  </script>
+</body>
+</html>

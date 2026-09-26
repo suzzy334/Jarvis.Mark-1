@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HITAM StudentMaster | Student Profile &amp; Campus Portal</title>
+  <link rel="stylesheet" href="css/hitam_theme.css">
+  <style>
+    /* NEXT-LEVEL GLASSMORPHIC ENHANCEMENTS */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: 0 8px 32px 0 rgba(27, 94, 32, 0.08);
+      border-radius: 8px;
+    }
+
+    .hero-profile-card {
+      background: linear-gradient(135deg, #0d3314 0%, #1b5e20 60%, #2e7d32 100%);
+      color: white;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(13, 51, 20, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-avatar-group {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .hero-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: var(--hitam-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      border: 3px solid #a5d6a7;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .hero-info h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-info p {
+      font-size: 0.85rem;
+      color: #c8e6c9;
+      margin-top: 2px;
+    }
+
+    .hero-metrics {
+      display: flex;
+      gap: 18px;
+      text-align: right;
+    }
+
+    .hero-metric-box {
+      background: rgba(255, 255, 255, 0.12);
+      padding: 8px 16px;
+      border-radius: 6px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .hero-metric-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .hero-metric-lbl {
+      font-size: 0.7rem;
+      color: #a5d6a7;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* CIRCULAR PROGRESS GAUGE */
+    .gauge-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #ffffff;
+      padding: 14px 20px;
+      border-radius: 6px;
+      border: 1px solid #dcdcdc;
+      margin-bottom: 16px;
+    }
+
+    .gauge-circle {
+      position: relative;
+      width: 76px;
+      height: 76px;
+    }
+
+    .gauge-circle svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .gauge-circle circle {
+      fill: none;
+      stroke-width: 7;
+      stroke-linecap: round;
+    }
+
+    .gauge-bg {
+      stroke: #e0e0e0;
+    }
+
+    .gauge-bar {
+      stroke: var(--hitam-accent);
+      stroke-dasharray: 220;
+      stroke-dashoffset: 47; /* 78.5% */
+      transition: stroke-dashoffset 1s ease-out;
+    }
+
+    .gauge-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--hitam-dark);
+    }
+
+    /* DYNAMIC CONTENT VIEWS */
+    .portal-view-section {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .portal-view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* TIMETABLE GRID */
+    .timetable-grid {
+      display: grid;
+      grid-template-columns: 120px repeat(6, 1fr);
+      gap: 6px;
+      font-size: 0.78rem;
+      margin-top: 12px;
+    }
+
+    .timetable-header {
+      background: var(--hitam-primary);
+      color: white;
+      padding: 8px 6px;
+      text-align: center;
+      font-weight: 700;
+      border-radius: 4px;
+    }
+
+    .timetable-cell {
+      background: white;
+      border: 1px solid #e0e0e0;
+      padding: 10px 6px;
+      text-align: center;
+      font-weight: 600;
+      border-radius: 4px;
+      color: var(--hitam-text-main);
+    }
+
+    .timetable-day {
+      background: #e8f5e9;
+      font-weight: 800;
+      color: var(--hitam-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* HARDWARE TOUCH PIN ALERT BADGE */
+    .touch-pin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      color: #f57f17;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="hitam-header">
+    <div class="hitam-brand-group">
+      <div class="hitam-logo-emblem" style="background:transparent; border:none; padding:0;">
+        <svg class="hitam-tree-logo" viewBox="0 0 54 54" width="48" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="27" cy="27" r="26" fill="#FFFFFF" stroke="#4A9B3E" stroke-width="1.8"/>
+          <!-- Trunk & Roots -->
+          <path d="M26 43 L28 43 L27.5 31 C29 29 32 26 35 25 M26.5 31 C25 29 22 26 19 25" stroke="#1B5E20" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Left Brain Hemisphere (Nature Foliage) -->
+          <path d="M26 12 C23 11 19 12 17 15 C15 18 16 22 17 25 C16 28 18 31 22 31 C25 31 26 28 26 26" fill="#4A9B3E" fill-opacity="0.9" stroke="#1B5E20" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- Right Brain Hemisphere (Engineering Gyri) -->
+          <path d="M28 12 C31 11 35 12 37 15 C39 18 38 22 37 25 C38 28 36 31 32 31 C29 31 28 28 28 26" fill="#2E7D32" fill-opacity="0.95" stroke="#0D3314" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- Synaptic/Neural Nodes & Leaves -->
+          <path d="M21 16 Q24 19 26 22 M33 16 Q30 19 28 22" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="20" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="34" cy="18" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="14" r="1.5" fill="#FFFFFF"/>
+          <circle cx="27" cy="22" r="1.5" fill="#D4AF37"/>
+          <!-- Ground Base -->
+          <path d="M18 43 Q27 41 36 43" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="hitam-title-block">
+        <h1>Hyderabad Institute of Technology and Management</h1>
+        <p>Department of Electronics and Communication Engineering</p>
+      </div>
+    </div>
+    <div class="hitam-accreditation-tag">
+      🛡️ Accredited by NAAC (A+ Grade) | Affiliated to JNTUH | Approved by AICTE
+    </div>
+  </header>
+
+  <!-- TICKER SUB-BAR -->
+  <div class="hitam-ticker-bar">
+    <div class="hitam-ticker-text">
+      <span class="hitam-ticker-badge">ACADEMIC NOTICE</span>
+      Welcome to 4th Day FDP on "Transforming ELT through Technology and Pedagogy" By English Department | IV B.Tech Major Project Submissions Active.
+    </div>
+    <div id="currentDateDisplay"></div>
+  </div>
+
+  <!-- USER STATUS BAR -->
+  <div class="hitam-user-bar">
+    <div id="userGreeting">HI...CHALLA SRINATH</div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span class="touch-pin-badge" style="background:#e8f5e9; border:1px solid #81c784; color:#1b5e20;">
+        <span>🛡️</span> Attendance Records: Cryptographically Attested by Faculty Hardware Tokens
+      </span>
+      <a href="challenge.html" style="background:#d4af37; color:#092610; font-weight:800; text-decoration:none; font-size:0.75rem; padding:4px 12px; border-radius:12px; display:inline-flex; align-items:center; gap:5px;">
+        <span>⚡</span> Hacker Challenge
+      </a>
+      <a href="#" onclick="showSection('changeContactView')">Profile Settings</a>
+      <a href="login.html" onclick="sessionStorage.clear()">Logout</a>
+    </div>
+  </div>
+
+  <!-- MAIN 2-COLUMN PORTAL CONTAINER -->
+  <div class="hitam-portal-container">
+
+    <!-- LEFT SIDEBAR MENU (24 Interactive Items) -->
+    <aside class="hitam-menu-card glass-panel">
+      <div class="hitam-menu-header">CAMPUS MENU</div>
+      <ul class="hitam-menu-list">
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link active" onclick="showSection('profileView', this)"><span class="hitam-plus-icon">+</span> PROFILE / BIO-DATA</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('attendanceView', this)"><span class="hitam-plus-icon">+</span> ATTENDANCE (78.5%)</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('marksView', this)"><span class="hitam-plus-icon">+</span> MARKS &amp; SGPA</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('calendarView', this)"><span class="hitam-plus-icon">+</span> ACADEMIC CALENDER</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('registerView', this)"><span class="hitam-plus-icon">+</span> ACADEMIC REGISTER</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('assignmentsView', this)"><span class="hitam-plus-icon">+</span> ASSIGNMENTS REPORT</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('backlogsView', this)"><span class="hitam-plus-icon">+</span> BACKLOGS (0)</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('libraryView', this)"><span class="hitam-plus-icon">+</span> BOOK SEARCH &amp; ISSUES</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('changeContactView', this)"><span class="hitam-plus-icon">+</span> CHANGE MOBILE NO/EMAIL</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('directoryView', this)"><span class="hitam-plus-icon">+</span> DIRECTORY (FACULTY)</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('examScheduleView', this)"><span class="hitam-plus-icon">+</span> EXAM SCHEDULE</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('feeView', this)"><span class="hitam-plus-icon">+</span> FEE DETAILS (CLEARED)</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('feedbackView', this)"><span class="hitam-plus-icon">+</span> FEEDBACK</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('hostelView', this)"><span class="hitam-plus-icon">+</span> HOSTEL REQUEST</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('lessonPlanView', this)"><span class="hitam-plus-icon">+</span> LESSON PLAN</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('suggestionView', this)"><span class="hitam-plus-icon">+</span> OBSERVATION/SUGGESTION</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('paymentView', this)"><span class="hitam-plus-icon">+</span> ONLINE PAYMENT</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('projectView', this)"><span class="hitam-plus-icon">+</span> PROJECT SEARCH (SENTINEL)</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('resourcesView', this)"><span class="hitam-plus-icon">+</span> RESOURCES / LECTURES</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('timetableView', this)"><span class="hitam-plus-icon">+</span> TIME TABLE</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('topicsView', this)"><span class="hitam-plus-icon">+</span> TOPICS COVERED</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('transportView', this)"><span class="hitam-plus-icon">+</span> TRANSPORT REQUEST</a></li>
+        <li class="hitam-menu-item"><a href="#" class="hitam-menu-link" onclick="showSection('securityView', this)"><span class="hitam-plus-icon">+</span> 🛡️ SENTINELKEY PUF CORE</a></li>
+      </ul>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT WORKSPACE -->
+    <main class="hitam-main-content glass-panel">
+
+      <!-- TOP HERO CARD (GLASSMORPHIC PROFILE HEADER) -->
+      <div class="hero-profile-card">
+        <div class="hero-avatar-group">
+          <div class="hero-avatar" id="avatarInitial">CS</div>
+          <div class="hero-info">
+            <h2 id="heroName">CHALLA SRINATH</h2>
+            <p>Roll No: <strong id="heroRoll" style="color:white;">23E51A0417</strong> | B.Tech ECE (IV B.Tech - I Semester)</p>
+            <p style="font-size:0.75rem; opacity:0.9; margin-top:4px;">
+              Admission No: <strong>7598</strong> | College: Hyderabad Institute of Technology and Management
+            </p>
+          </div>
+        </div>
+        <div class="hero-metrics">
+          <div class="hero-metric-box">
+            <div class="hero-metric-val" id="heroAttendance">78.5%</div>
+            <div class="hero-metric-lbl">Attendance</div>
+          </div>
+          <div class="hero-metric-box">
+            <div class="hero-metric-val">8.64</div>
+            <div class="hero-metric-lbl">CGPA</div>
+          </div>
+          <div class="hero-metric-box">
+            <div class="hero-metric-val" style="color:#a5d6a7;">CLEARED</div>
+            <div class="hero-metric-lbl">Backlogs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- VIEW 1: STUDENT PROFILE (10 Accordions matching StudentMaster.aspx) -->
+      <!-- ===================================================================== -->
+      <div id="profileView" class="portal-view-section active">
+        <div class="hitam-section-title">
+          <span>STUDENT MASTER PROFILE — ACCORDIONS</span>
+          <div style="display:flex; gap:8px;">
+            <button class="hitam-btn hitam-btn-outline" onclick="window.print()">Print Dossier</button>
+            <button class="hitam-btn hitam-btn-outline" onclick="alert('Student Dossier Exported.')">Export PDF</button>
+          </div>
+        </div>
+
+        <div class="hitam-accordion-group">
+          <!-- 1. BIO-DATA -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('bioBody')">
+            <span>&rsaquo; BIO-DATA</span>
+            <span id="bioBodyIcon">&#9660;</span>
+          </div>
+          <div class="hitam-accordion-body open" id="bioBody">
+            <table class="hitam-table">
+              <tr>
+                <th style="width:25%;">Roll Number</th>
+                <td style="width:25%; font-weight:700;">23E51A0417</td>
+                <th style="width:25%;">Admission Number</th>
+                <td style="width:25%;">7598</td>
+              </tr>
+              <tr>
+                <th>Student Full Name</th>
+                <td style="font-weight:700;">CHALLA SRINATH</td>
+                <th>Date of Birth</th>
+                <td>17/08/2005</td>
+              </tr>
+              <tr>
+                <th>Course / Department</th>
+                <td>B.Tech — Electronics and Communication Engineering</td>
+                <th>Semester</th>
+                <td>IV/IV B.Tech I Semester (2026-2027)</td>
+              </tr>
+              <tr>
+                <th>Father's Name</th>
+                <td>CHALLA KRISHNAIAH</td>
+                <th>Mother's Name</th>
+                <td>CHALLA LAKSHMI</td>
+              </tr>
+              <tr>
+                <th>Contact Mobile</th>
+                <td>+91 9182359854</td>
+                <th>Institutional Email</th>
+                <td>23E51A0417@hitam.org</td>
+              </tr>
+              <tr>
+                <th>Assigned Faculty Mentor</th>
+                <td colspan="3">Dr. K. Ramesh (Associate Professor, Department of ECE)</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- 2. PERFORMANCE PRESENT -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('perfPresentBody')">
+            <span>&rsaquo; PERFORMANCE (Present) &amp; ATTENDANCE RECORD</span>
+            <span id="perfPresentBodyIcon">&#9660;</span>
+          </div>
+          <div class="hitam-accordion-body open" id="perfPresentBody">
+            <div class="gauge-wrapper">
+              <div class="gauge-circle">
+                <svg viewBox="0 0 80 80">
+                  <circle class="gauge-bg" cx="40" cy="40" r="35"></circle>
+                  <circle class="gauge-bar" cx="40" cy="40" r="35"></circle>
+                </svg>
+                <div class="gauge-text">78.5%</div>
+              </div>
+              <div>
+                <div style="font-size:0.95rem; font-weight:800; color:var(--hitam-primary);">
+                  OVERALL AGGREGATE: 78.50% (252 ATTENDED / 321 CONDUCTED)
+                </div>
+                <div style="font-size:0.8rem; color:var(--hitam-text-muted); margin-top:2px;">
+                  Status: <span class="hitam-badge hitam-badge-success">ELIGIBLE FOR SEMESTER EXAMINATIONS</span>
+                </div>
+              </div>
+            </div>
+            <p style="font-size:0.8rem; color:var(--hitam-text-muted);">
+              Detailed subject-wise breakdown is available in the <a href="#" onclick="showSection('attendanceView')">Attendance Menu</a>.
+            </p>
+          </div>
+
+          <!-- 3. PERFORMANCE PAST -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('perfPastBody')">
+            <span>&rsaquo; PERFORMANCE (Past) &amp; SEMESTER SGPA</span>
+            <span id="perfPastBodyIcon">&#9654;</span>
+          </div>
+          <div class="hitam-accordion-body" id="perfPastBody">
+            <table class="hitam-table">
+              <thead>
+                <tr>
+                  <th>Semester</th>
+                  <th>Credits Registered</th>
+                  <th>Credits Earned</th>
+                  <th>SGPA</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>I B.Tech I Semester</td><td>20</td><td>20</td><td>8.42</td><td><span class="hitam-badge hitam-badge-success">PASSED</span></td></tr>
+                <tr><td>I B.Tech II Semester</td><td>20</td><td>20</td><td>8.68</td><td><span class="hitam-badge hitam-badge-success">PASSED</span></td></tr>
+                <tr><td>II B.Tech I Semester</td><td>22</td><td>22</td><td>8.55</td><td><span class="hitam-badge hitam-badge-success">PASSED</span></td></tr>
+                <tr><td>II B.Tech II Semester</td><td>22</td><td>22</td><td>8.71</td><td><span class="hitam-badge hitam-badge-success">PASSED</span></td></tr>
+                <tr><td>III B.Tech I Semester</td><td>24</td><td>24</td><td>8.80</td><td><span class="hitam-badge hitam-badge-success">PASSED</span></td></tr>
+                <tr><td>III B.Tech II Semester</td><td>24</td><td>24</td><td>8.70</td><td><span class="hitam-badge hitam-badge-success">PASSED</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 4. FEE DETAILS -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('feeAccordionBody')">
+            <span>&rsaquo; FEE DETAILS</span>
+            <span id="feeAccordionBodyIcon">&#9654;</span>
+          </div>
+          <div class="hitam-accordion-body" id="feeAccordionBody">
+            <table class="hitam-table">
+              <tr>
+                <th>Academic Year</th><td>2026-2027 (IV Year)</td>
+                <th>Annual Tuition Fee</th><td>Rs. 1,05,000/-</td>
+              </tr>
+              <tr>
+                <th>Amount Paid</th><td>Rs. 1,05,000/- (100% Cleared)</td>
+                <th>Balance Due</th><td style="font-weight:700; color:#2e7d32;">Rs. 0.00 (NIL)</td>
+              </tr>
+              <tr>
+                <th>Official Receipt</th><td>REC-HITAM-2026-7598</td>
+                <th>Clearance Certificate</th><td><span class="hitam-badge hitam-badge-success">ALL DUES CLEARED</span></td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- 5. BACKLOGS -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('backlogAccordionBody')">
+            <span>&rsaquo; BACKLOGS</span>
+            <span id="backlogAccordionBodyIcon">&#9654;</span>
+          </div>
+          <div class="hitam-accordion-body" id="backlogAccordionBody">
+            <p style="color:#2e7d32; font-weight:700; font-size:0.85rem;">
+              ✓ Zero Backlogs. Student has completed all previous semesters in first attempt.
+            </p>
+          </div>
+
+          <!-- 6. OUTINGS -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('outingBody')">
+            <span>&rsaquo; OUTINGS &amp; CAMPUS PASSES</span>
+            <span id="outingBodyIcon">&#9654;</span>
+          </div>
+          <div class="hitam-accordion-body" id="outingBody">
+            <p style="font-size:0.82rem; color:var(--hitam-text-muted);">
+              Category: Day Scholar (Medchal Campus). Gate access verified through RFID smart ID card.
+            </p>
+          </div>
+
+          <!-- 7. COUNSELING DETAILS -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('counselAccordionBody')">
+            <span>&rsaquo; COUNSELING DETAILS &amp; MENTOR REMARKS</span>
+            <span id="counselAccordionBodyIcon">&#9654;</span>
+          </div>
+          <div class="hitam-accordion-body" id="counselAccordionBody">
+            <table class="hitam-table">
+              <tr>
+                <th style="width:25%;">Faculty Mentor</th>
+                <td>Dr. K. Ramesh (Associate Professor, Department of ECE)</td>
+              </tr>
+              <tr>
+                <th>Review Session Date</th>
+                <td>08-SEP-2026</td>
+              </tr>
+              <tr>
+                <th>Mentor Assessment</th>
+                <td>Active project lead on hardware security &amp; PUF authentication token. Consistent academic standing.</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- 8. DISCIPLINARY ACTION -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('discBody')">
+            <span>&rsaquo; DISCIPLINARY ACTION</span>
+            <span id="discBodyIcon">&#9654;</span>
+          </div>
+          <div class="hitam-accordion-body" id="discBody">
+            <span class="hitam-badge hitam-badge-success">EXEMPLARY CONDUCT — NO ADVERSE REMARKS</span>
+          </div>
+
+          <!-- 9. SPF BAND PERFORMANCE -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('spfBody')">
+            <span>&rsaquo; SPF BAND PERFORMANCE</span>
+            <span id="spfBodyIcon">&#9654;</span>
+          </div>
+          <div class="hitam-accordion-body" id="spfBody">
+            <p style="font-size:0.82rem;"><strong>SPF Category:</strong> Band A+ (High Technical &amp; Innovation Capability)</p>
+          </div>
+
+          <!-- 10. CAREER COUNSELLING -->
+          <div class="hitam-accordion-header" onclick="toggleAccordion('careerBody')">
+            <span>&rsaquo; CAREER COUNSELLING &amp; PLACEMENT TRAINING</span>
+            <span id="careerBodyIcon">&#9654;</span>
+          </div>
+          <div class="hitam-accordion-body" id="careerBody">
+            <p style="font-size:0.82rem;">Career Development Cell (CDC): Enrolled in Technical Core Track (Embedded Systems &amp; Hardware Security).</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- VIEW 2: ATTENDANCE (All 11 Real Subjects) -->
+      <!-- ===================================================================== -->
+      <div id="attendanceView" class="portal-view-section">
+        <div class="hitam-section-title">
+          <span>SUBJECT-WISE ATTENDANCE BREAKDOWN (78.50% OVERALL)</span>
+          <span class="hitam-badge hitam-badge-success">252 / 321 SESSIONS ATTENDED</span>
+        </div>
+
+        <table class="hitam-table">
+          <thead>
+            <tr>
+              <th>Subject Code</th>
+              <th>Subject Title</th>
+              <th>Faculty</th>
+              <th>Conducted</th>
+              <th>Attended</th>
+              <th>Percentage</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="realAttendanceTbody">
+            <!-- Populated dynamically from backend -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- VIEW 3: TIME TABLE (Weekly 6-Period Schedule) -->
+      <!-- ===================================================================== -->
+      <div id="timetableView" class="portal-view-section">
+        <div class="hitam-section-title">
+          <span>IV B.TECH ECE-A WEEKLY TIMETABLE (ROOM: AB-302)</span>
+        </div>
+        <div class="timetable-grid">
+          <div class="timetable-header">DAY / PERIOD</div>
+          <div class="timetable-header">P1 (09:15-10:15)</div>
+          <div class="timetable-header">P2 (10:15-11:15)</div>
+          <div class="timetable-header">P3 (11:15-12:15)</div>
+          <div class="timetable-header">P4 (01:00-02:00)</div>
+          <div class="timetable-header">P5 (02:00-03:00)</div>
+          <div class="timetable-header">P6 (03:00-04:00)</div>
+
+          <div class="timetable-day">MON</div>
+          <div class="timetable-cell">AE</div><div class="timetable-cell">MWOC</div><div class="timetable-cell">IML</div><div class="timetable-cell">IPR</div><div class="timetable-cell" colspan="2" style="background:#e8f5e9;">MWE LAB</div>
+          
+          <div class="timetable-day">TUE</div>
+          <div class="timetable-cell">MWOC</div><div class="timetable-cell">AWC</div><div class="timetable-cell">AE</div><div class="timetable-cell">CDC</div><div class="timetable-cell" colspan="2" style="background:#e8f5e9;">MINI PROJ</div>
+
+          <div class="timetable-day">WED</div>
+          <div class="timetable-cell">IML</div><div class="timetable-cell">IPR</div><div class="timetable-cell">FOME</div><div class="timetable-cell">PS-1</div><div class="timetable-cell">AE</div><div class="timetable-cell">LIBRARY</div>
+
+          <div class="timetable-day">THU</div>
+          <div class="timetable-cell">AWC</div><div class="timetable-cell">MWOC</div><div class="timetable-cell">AE</div><div class="timetable-cell">IML</div><div class="timetable-cell">CDC</div><div class="timetable-cell">SPORTS</div>
+
+          <div class="timetable-day">FRI</div>
+          <div class="timetable-cell">IPR</div><div class="timetable-cell">FOME</div><div class="timetable-cell">MWOC</div><div class="timetable-cell">LYB</div><div class="timetable-cell" colspan="2" style="background:#e8f5e9;">MAJOR PROJ</div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- VIEW 4: MAJOR PROJECT (SentinelKey Abstract & Architecture) -->
+      <!-- ===================================================================== -->
+      <div id="projectView" class="portal-view-section">
+        <div class="hitam-section-title">
+          <span>MAJOR PROJECT — ECE IV B.TECH PHASE-I</span>
+          <span class="hitam-badge hitam-badge-success">SENTINELKEY</span>
+        </div>
+
+        <div class="sentinel-security-card">
+          <h4>SentinelKey — A PUF Based Hardware Authentication Token for Universal Web Application Security</h4>
+          <p style="font-size:0.85rem; opacity:0.95; line-height:1.6; margin-top:8px;">
+            SentinelKey eliminates password phishing, credential replay, and OTP interception attacks using an SRAM Physically Unclonable Function (SRAM-PUF) inside an ESP32 microcontroller. Key material is dynamically extracted from microscopic silicon gate threshold variations and never stored on flash storage.
+          </p>
+        </div>
+
+        <table class="hitam-table" style="margin-top:16px;">
+          <tr>
+            <th style="width:25%;">Project Title</th>
+            <td colspan="3"><strong>SentinelKey: A Physically Unclonable Function (PUF) Based Hardware Authentication Token for Universal Web Application Security</strong></td>
+          </tr>
+          <tr>
+            <th>Department</th><td>Electronics and Communication Engineering</td>
+            <th>Institution</th><td>Hyderabad Institute of Technology and Management (HITAM)</td>
+          </tr>
+          <tr>
+            <th>Project Lead / Student</th><td>CHALLA SRINATH (23E51A0417)</td>
+            <th>Academic Guide</th><td>Dr. K. Ramesh, M.Tech, Ph.D (HOD - ECE)</td>
+          </tr>
+          <tr>
+            <th>Hardware Target</th><td>ESP32 DevKit V1 (Silicon PUF)</td>
+            <th>Touch / Presence Pin</th><td><strong>Pin D4 (GPIO 4 / Touch0)</strong></td>
+          </tr>
+          <tr>
+            <th>Enforcement Scope</th><td colspan="3"><span class="hitam-badge hitam-badge-success">Faculty-Only Hardware Gating</span> — 4 Dedicated ECE Faculty USB Tokens</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- VIEW 6: CHANGE MOBILE / EMAIL (Profile Settings) -->
+      <!-- ===================================================================== -->
+      <div id="changeContactView" class="portal-view-section">
+        <div class="hitam-section-title">
+          <span>STUDENT PROFILE &amp; CONTACT INFORMATION</span>
+        </div>
+        <div style="background:#e8f5e9; border:1px solid #a5d6a7; padding:14px; border-radius:6px; margin-bottom:16px; font-size:0.82rem;">
+          🛡️ <strong>Student Access Control:</strong> Student portal login uses direct Roll Number and password credentials. High-level academic record modifications are managed via department coordinators and verified against faculty PUF signatures.
+        </div>
+        <div style="max-width:500px;">
+          <div class="hitam-form-group">
+            <label class="hitam-form-label">STUDENT MOBILE NUMBER</label>
+            <input class="hitam-input" type="text" id="editMobile" value="9182359854">
+          </div>
+          <div class="hitam-form-group">
+            <label class="hitam-form-label">INSTITUTIONAL EMAIL</label>
+            <input class="hitam-input" type="text" id="editEmail" value="23E51A0417@hitam.org" readonly style="background:#f0f0f0;">
+          </div>
+          <div class="hitam-form-group">
+            <label class="hitam-form-label">UPDATE STUDENT PASSWORD</label>
+            <input class="hitam-input" type="password" id="editPass" placeholder="Enter new password (e.g. Sri@7254)">
+          </div>
+          <button class="hitam-btn" onclick="saveStudentSettings()">
+            💾 Save Profile Settings
+          </button>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- VIEW 7: ACADEMIC CALENDAR -->
+      <!-- ===================================================================== -->
+      <div id="calendarView" class="portal-view-section">
+        <div class="hitam-section-title">
+          <span>ACADEMIC CALENDAR — 2026-2027</span>
+        </div>
+        <table class="hitam-table">
+          <thead>
+            <tr><th>Milestone / Event</th><th>Start Date</th><th>End Date</th><th>Remarks</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Commencement of Classwork</td><td>15-JUL-2026</td><td>-</td><td>IV B.Tech I Semester</td></tr>
+            <tr><td>1st Mid Term Examinations</td><td>15-SEP-2026</td><td>22-SEP-2026</td><td>Descriptive &amp; Objective</td></tr>
+            <tr><td>Major Project Phase-I Review</td><td>12-OCT-2026</td><td>16-OCT-2026</td><td>Department Committee</td></tr>
+            <tr><td>2nd Mid Term Examinations</td><td>16-NOV-2026</td><td>23-NOV-2026</td><td>Descriptive &amp; Objective</td></tr>
+            <tr><td>End Semester Practical Exams</td><td>01-DEC-2026</td><td>08-DEC-2026</td><td>External Examiner</td></tr>
+            <tr><td>End Semester Theory Exams</td><td>10-DEC-2026</td><td>24-DEC-2026</td><td>JNTUH Scheduled</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- VIEW 8: FACULTY PUF HARDWARE ATTESTATION AUDIT -->
+      <!-- ===================================================================== -->
+      <div id="securityView" class="portal-view-section">
+        <div class="hitam-section-title">
+          <span>FACULTY PUF HARDWARE ATTESTATION &amp; AUDIT MONITOR</span>
+        </div>
+        <div class="sentinel-security-card" style="margin-bottom:16px;">
+          <h4>ECE Department Faculty SentinelKey™ Tokens (Hardware Enforced)</h4>
+          <p style="font-size:0.82rem; color:#c8e6c9; margin-top:4px;">
+            All classroom attendance sessions and grades are cryptographically signed by faculty members using dedicated Silicon PUF USB tokens with physical Pin D4 touch confirmation. No student attendance can ever be marked or tampered with without the matching hardware token.
+          </p>
+          <div class="sentinel-stat-grid" style="margin-top:16px;">
+            <div class="sentinel-stat-item">
+              <div class="sentinel-stat-label">Faculty Hardware Restriction</div>
+              <div class="sentinel-stat-value" style="color:#a5d6a7;">Strict (4/4 Tokens Bound)</div>
+            </div>
+            <div class="sentinel-stat-item">
+              <div class="sentinel-stat-label">Student Auth Model</div>
+              <div class="sentinel-stat-value" style="color:#ffffff;">Direct Password Auth</div>
+            </div>
+            <div class="sentinel-stat-item">
+              <div class="sentinel-stat-label">Non-Repudiation Key</div>
+              <div class="sentinel-stat-value">HMAC-SHA256 Silicon PUF</div>
+            </div>
+            <div class="sentinel-stat-item">
+              <div class="sentinel-stat-label">Physical Presence Pin</div>
+              <div class="sentinel-stat-value" style="color:#a5d6a7;">ESP32 GPIO 4 (Pin D4)</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:white; border:1px solid #e0e0e0; border-radius:6px; padding:16px;">
+          <h4 style="color:var(--hitam-primary); margin-bottom:12px; font-size:0.95rem;">Verified Faculty Hardware Tokens in Department</h4>
+          <table class="hitam-table">
+            <thead>
+              <tr>
+                <th>Faculty ID</th>
+                <th>Faculty Name</th>
+                <th>Course / Subject</th>
+                <th>Bound USB Hardware Token</th>
+                <th>Presence Guard</th>
+                <th>Attestation Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>FAC-ECE-101</strong></td>
+                <td>Dr. K. Ramesh (Prof &amp; HOD)</td>
+                <td>VLSI Design (EC701PC)</td>
+                <td><code>ESP32-SENTINEL-FAC01</code></td>
+                <td>Pin D4 Touch</td>
+                <td><span class="hitam-badge hitam-badge-success">Hardware Locked</span></td>
+              </tr>
+              <tr>
+                <td><strong>FAC-ECE-102</strong></td>
+                <td>Dr. P. Sunitha (Assoc Prof)</td>
+                <td>Digital Signal Processing (EC702PC)</td>
+                <td><code>ESP32-SENTINEL-FAC02</code></td>
+                <td>Pin D4 Touch</td>
+                <td><span class="hitam-badge hitam-badge-success">Hardware Locked</span></td>
+              </tr>
+              <tr>
+                <td><strong>FAC-ECE-103</strong></td>
+                <td>Dr. V. Rajesh (Assoc Prof)</td>
+                <td>Embedded Systems &amp; IoT (EC703PC)</td>
+                <td><code>ESP32-SENTINEL-FAC03</code></td>
+                <td>Pin D4 Touch</td>
+                <td><span class="hitam-badge hitam-badge-success">Hardware Locked</span></td>
+              </tr>
+              <tr>
+                <td><strong>FAC-ECE-104</strong></td>
+                <td>Dr. M. Anitha (Asst Prof)</td>
+                <td>Microwave Engineering (EC704PC)</td>
+                <td><code>ESP32-SENTINEL-FAC04</code></td>
+                <td>Pin D4 Touch</td>
+                <td><span class="hitam-badge hitam-badge-success">Hardware Locked</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/web_serial.js"></script>
+  <script>
+    // Tab switching controller
+    function showSection(sectionId, linkEl) {
+      document.querySelectorAll('.portal-view-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById(sectionId);
+      if (target) target.classList.add('active');
+
+      if (linkEl) {
+        document.querySelectorAll('.hitam-menu-link').forEach(link => link.classList.remove('active'));
+        linkEl.classList.add('active');
+      }
+    }
+
+    // Accordion controller
+    function toggleAccordion(id) {
+      const el = document.getElementById(id);
+      const icon = document.getElementById(id + "Icon");
+      if (el.classList.contains("open")) {
+        el.classList.remove("open");
+        if (icon) icon.innerHTML = "&#9654;";
+      } else {
+        el.classList.add("open");
+        if (icon) icon.innerHTML = "&#9660;";
+      }
+    }
+
+    document.getElementById("currentDateDisplay").innerText = new Date().toLocaleDateString('en-US', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    function saveStudentSettings() {
+      const mob = document.getElementById('editMobile').value;
+      alert(`✓ Profile settings saved successfully!\nUpdated Mobile: ${mob}`);
+    }
+
+    // Load full student profile data from Flask backend
+    async function initStudentMaster() {
+      const roll = "23E51A0417";
+      try {
+        const resp = await fetch(`/api/student/dashboard?roll=${roll}`);
+        const data = await resp.json();
+
+        // Update headers
+        document.getElementById("heroName").innerText = data.biodata.name;
+        document.getElementById("heroRoll").innerText = data.biodata.roll_no;
+        document.getElementById("userGreeting").innerText = `HI...${data.biodata.name}`;
+        document.getElementById("heroAttendance").innerText = `${data.attendance.overall_percentage}%`;
+
+        // Render Real Subjects in Attendance View
+        const tbody = document.getElementById("realAttendanceTbody");
+        tbody.innerHTML = "";
+        data.attendance.subjects.forEach(sub => {
+          const isShortage = sub.percentage < 75.0;
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${sub.code}</strong></td>
+              <td>${sub.name}</td>
+              <td>${sub.faculty}</td>
+              <td>${sub.conducted}</td>
+              <td>${sub.attended}</td>
+              <td>
+                <span class="hitam-badge ${isShortage ? 'hitam-badge-danger' : 'hitam-badge-success'}">
+                  ${sub.percentage.toFixed(2)}%
+                </span>
+              </td>
+              <td>
+                ${isShortage ? 
+                  '<span style="color:#c62828; font-weight:700; font-size:0.75rem;">Shortage</span>' : 
+                  '<span style="color:#2e7d32; font-weight:700; font-size:0.75rem;">Eligible</span>'}
+              </td>
+            </tr>
+          `;
+        });
+
+      } catch (err) {
+        console.error("Dashboard error:", err);
+      }
+    }
+
+    initStudentMaster();
+  </script>
+</body>
+</html>
