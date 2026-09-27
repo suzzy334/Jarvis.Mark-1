@@ -4,6 +4,10 @@
   "trailingSlash": false,
   "routes": [
     {
+      "src": "^/api/(.*)$",
+      "dest": "https://sentinelkey-backend.onrender.com/api/$1"
+    },
+    {
       "src": "^/$",
       "dest": "/login.html"
     },

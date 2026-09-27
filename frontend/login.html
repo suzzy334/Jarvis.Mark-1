@@ -866,6 +866,11 @@
           openHardwareModal();
         } else if (data.status === 'SUCCESS') {
           // Student or Admin - Direct Login!
+          if (data.session_token) {
+            localStorage.setItem('sentinel_session_token', data.session_token);
+            sessionStorage.setItem('sentinel_session_token', data.session_token);
+            document.cookie = `session_token=${data.session_token}; path=/; max-age=86400; SameSite=Lax`;
+          }
           sessionStorage.setItem('sentinel_user', JSON.stringify(data.user));
           routeUserByRole(data.role);
         }
@@ -957,6 +962,11 @@
         if (verifyResp.ok && verifyData.status === 'SUCCESS') {
           statusText.innerText = 'Hardware Attestation Successful! Loading Faculty Portal...';
           document.getElementById('statusPulse').classList.add('connected');
+          if (verifyData.session_token) {
+            localStorage.setItem('sentinel_session_token', verifyData.session_token);
+            sessionStorage.setItem('sentinel_session_token', verifyData.session_token);
+            document.cookie = `session_token=${verifyData.session_token}; path=/; max-age=86400; SameSite=Lax`;
+          }
           sessionStorage.setItem('sentinel_user', JSON.stringify(verifyData.user));
           setTimeout(() => {
             routeUserByRole(verifyData.role);

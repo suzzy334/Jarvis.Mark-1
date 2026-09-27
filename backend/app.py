@@ -83,6 +83,10 @@ def require_auth(role=None):
             if auth_header.startswith("Bearer "):
                 token = auth_header[7:].strip()
             if not token:
+                token = request.cookies.get("session_token")
+            if not token:
+                token = request.headers.get("X-Session-Token")
+            if not token:
                 token = request.args.get("session_token") or (request.get_json(silent=True) or {}).get("session_token")
 
             session = validate_session(token, required_role=role)
@@ -209,7 +213,7 @@ def login_password():
         )
         log_event("DIRECT_LOGIN", actor_id=user["id"], details=f"Role: {user['role']}")
         conn.close()
-        return jsonify({
+        resp = jsonify({
             "status": "SUCCESS",
             "session_token": session_token,
             "role": user["role"],
@@ -221,6 +225,8 @@ def login_password():
                 "department": user["department"]
             }
         })
+        resp.set_cookie("session_token", session_token, path="/", samesite="Lax", max_age=86400)
+        return resp
 
     # Faculty members STRICTLY REQUIRE their SentinelKey PUF hardware token
     device = conn.execute(
@@ -518,7 +524,7 @@ def verify_token():
     )
     log_event("SENTINELKEY_LOGIN_SUCCESS", actor_id=user_id, details=f"Device: {device['device_id']}")
 
-    return jsonify({
+    resp = jsonify({
         "status": "SUCCESS",
         "session_token": session_token,
         "role": user["role"],
@@ -531,6 +537,8 @@ def verify_token():
             "device_id": device["device_id"]
         }
     })
+    resp.set_cookie("session_token", session_token, path="/", samesite="Lax", max_age=86400)
+    return resp
 
 
 # =============================================================================

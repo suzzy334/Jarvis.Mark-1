@@ -33,10 +33,40 @@ window.SENTINEL_CONFIG = {
 };
 
 // Global transparent fetch proxy: rewrites relative /api/ requests to Render backend when hosted on Vercel
+// and automatically injects session authentication headers and credentials
 (function () {
   if (typeof window !== "undefined" && window.fetch) {
     const originalFetch = window.fetch;
     window.fetch = function (resource, init) {
+      init = init || {};
+      
+      // Inject session token if present
+      const token = localStorage.getItem("sentinel_session_token") || 
+                    sessionStorage.getItem("sentinel_session_token") ||
+                    (document.cookie.split("; ").find(r => r.startsWith("session_token=")) || "").split("=")[1];
+      
+      if (token) {
+        if (!init.headers) {
+          init.headers = {
+            "Authorization": "Bearer " + token,
+            "X-Session-Token": token
+          };
+        } else if (init.headers instanceof Headers) {
+          if (!init.headers.has("Authorization")) init.headers.set("Authorization", "Bearer " + token);
+          if (!init.headers.has("X-Session-Token")) init.headers.set("X-Session-Token", token);
+        } else if (Array.isArray(init.headers)) {
+          init.headers.push(["Authorization", "Bearer " + token]);
+          init.headers.push(["X-Session-Token", token]);
+        } else {
+          if (!init.headers["Authorization"]) init.headers["Authorization"] = "Bearer " + token;
+          if (!init.headers["X-Session-Token"]) init.headers["X-Session-Token"] = token;
+        }
+      }
+      
+      if (!init.credentials) {
+        init.credentials = "include";
+      }
+
       if (typeof resource === "string" && resource.startsWith("/api/")) {
         const baseUrl = window.SENTINEL_CONFIG && window.SENTINEL_CONFIG.API_BASE_URL;
         if (baseUrl) {
