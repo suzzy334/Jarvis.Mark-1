@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HITAM Administrator Portal | SentinelKey Token Management &amp; Hardware MAC Desk</title>
   <link rel="stylesheet" href="css/hitam_theme.css">
+  <script src="js/config.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
@@ -41,6 +42,22 @@
       text-transform: uppercase;
       font-weight: 700;
       letter-spacing: 0.5px;
+    }
+    .dept-filter-btn {
+      background: white;
+      border: 1px solid #d1d5db;
+      color: #374151;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dept-filter-btn:hover, .dept-filter-btn.active {
+      background: var(--hitam-primary);
+      color: white;
+      border-color: var(--hitam-primary);
     }
     .hitam-tree-logo {
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
@@ -114,6 +131,59 @@
         <div class="lbl">Asymmetric ECDSA Nonce Replays Blocked</div>
         <div class="val" style="color:#2e7d32;">100% Protected (0 Leaks)</div>
       </div>
+    </div>
+
+    <!-- INSTITUTIONAL DIRECTORY & USER MANAGEMENT -->
+    <div class="hitam-main-content" style="margin-bottom: 24px;">
+      <div class="hitam-section-title">
+        <span>INSTITUTIONAL DIRECTORY: STUDENTS &amp; FACULTY ACROSS DEPARTMENTS</span>
+        <div style="display:flex; gap:10px;">
+          <button class="hitam-btn" style="background:#1b5e20;" onclick="openAddUserModal()">+ Register Student / Faculty</button>
+          <button class="hitam-btn hitam-btn-outline" onclick="loadUsersList()">Refresh Directory</button>
+        </div>
+      </div>
+
+      <!-- FILTER CONTROLS -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px; background:#f9fafb; padding:12px; border-radius:8px; border:1px solid #e5e7eb;">
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="dept-filter-btn active" onclick="filterDepartment('')">All Branches</button>
+          <button class="dept-filter-btn" onclick="filterDepartment('ECE')">ECE</button>
+          <button class="dept-filter-btn" onclick="filterDepartment('CSE')">CSE</button>
+          <button class="dept-filter-btn" onclick="filterDepartment('IT')">IT</button>
+          <button class="dept-filter-btn" onclick="filterDepartment('AIML')">AI &amp; ML</button>
+          <button class="dept-filter-btn" onclick="filterDepartment('AIDS')">AI &amp; DS</button>
+          <button class="dept-filter-btn" onclick="filterDepartment('CSBS')">CSBS</button>
+          <button class="dept-filter-btn" onclick="filterDepartment('MECH')">MECH</button>
+          <button class="dept-filter-btn" onclick="filterDepartment('CIVIL')">CIVIL</button>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <select id="userRoleFilter" class="hitam-input" style="padding:6px 10px; font-size:0.8rem;" onchange="loadUsersList()">
+            <option value="">All Roles</option>
+            <option value="student">Students Only</option>
+            <option value="faculty">Faculty Only</option>
+          </select>
+        </div>
+      </div>
+
+      <table class="hitam-table">
+        <thead>
+          <tr>
+            <th>Roll No / Emp ID</th>
+            <th>Full Name</th>
+            <th>Institutional Email</th>
+            <th>Branch</th>
+            <th>Role</th>
+            <th>Bound SentinelKey</th>
+            <th>Status</th>
+            <th style="text-align:center;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="usersTbody">
+          <tr>
+            <td colspan="8" style="text-align:center; padding:20px;">Loading student &amp; faculty directory...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- DEVICE REGISTRY & TOKEN MANAGEMENT -->
@@ -204,6 +274,93 @@
 
   </div>
 
+  <!-- REGISTER NEW STUDENT / FACULTY MODAL -->
+  <div class="sentinel-modal-backdrop" id="addUserModal">
+    <div class="sentinel-modal-card" style="max-width: 620px;">
+      <div class="sentinel-modal-header">
+        <h3>+ Register Institutional User (Student / Faculty)</h3>
+        <button onclick="closeAddUserModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:white;">&times;</button>
+      </div>
+      <div class="sentinel-modal-body" style="padding: 24px;">
+        <div style="background:#e8f5e9; padding:12px; border-radius:6px; margin-bottom:16px; font-size:0.82rem; border-left:4px solid var(--hitam-primary);">
+          Instantly register students or faculty across any engineering department. Registered users can immediately sign in to the portal with their credentials.
+        </div>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+          <div class="hitam-form-group">
+            <label class="hitam-form-label">FULL NAME *</label>
+            <input class="hitam-input" type="text" id="addUserName" placeholder="e.g. Challa Srinath">
+          </div>
+          <div class="hitam-form-group">
+            <label class="hitam-form-label">ROLL NO / EMPLOYEE ID *</label>
+            <input class="hitam-input" type="text" id="addUserRoll" placeholder="e.g. 23E51A0417 or FAC-ECE-105" style="text-transform:uppercase;">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+          <div class="hitam-form-group">
+            <label class="hitam-form-label">INSTITUTIONAL EMAIL *</label>
+            <input class="hitam-input" type="email" id="addUserEmail" placeholder="e.g. 23e51a0417@hitam.org">
+          </div>
+          <div class="hitam-form-group">
+            <label class="hitam-form-label">ROLE *</label>
+            <select class="hitam-input" id="addUserRole" onchange="onUserRoleChanged(this.value)">
+              <option value="student">Student (Direct Password Access)</option>
+              <option value="faculty">Faculty (Requires SentinelKey Token)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+          <div class="hitam-form-group">
+            <label class="hitam-form-label">DEPARTMENT / BRANCH *</label>
+            <select class="hitam-input" id="addUserDept">
+              <option value="ECE">ECE - Electronics &amp; Communication</option>
+              <option value="CSE">CSE - Computer Science &amp; Engineering</option>
+              <option value="IT">IT - Information Technology</option>
+              <option value="AIML">AIML - Artificial Intelligence &amp; ML</option>
+              <option value="AIDS">AIDS - Artificial Intelligence &amp; Data Science</option>
+              <option value="CSBS">CSBS - Computer Science &amp; Business Systems</option>
+              <option value="MECH">MECH - Mechanical Engineering</option>
+              <option value="CIVIL">CIVIL - Civil Engineering</option>
+            </select>
+          </div>
+          <div class="hitam-form-group">
+            <label class="hitam-form-label">SEMESTER / CLASS</label>
+            <input class="hitam-input" type="text" id="addUserSemester" value="IV B.Tech-I">
+          </div>
+        </div>
+
+        <div class="hitam-form-group">
+          <label class="hitam-form-label">INITIAL PASSWORD (DEFAULT: hitam@123)</label>
+          <input class="hitam-input" type="password" id="addUserPassword" placeholder="hitam@123">
+        </div>
+
+        <!-- Faculty specific hardware token binding -->
+        <div id="facultyHardwareFields" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:12px; margin-top:8px;">
+          <h4 style="margin:0 0 8px 0; color:#166534; font-size:0.85rem;">🔒 SentinelKey Hardware Token Binding</h4>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div>
+              <label class="hitam-form-label" style="font-size:0.72rem;">DEVICE ID</label>
+              <input class="hitam-input" type="text" id="addUserDeviceId" placeholder="e.g. ESP32-SENTINEL-FAC05" value="ESP32-SENTINEL-FAC05">
+            </div>
+            <div>
+              <label class="hitam-form-label" style="font-size:0.72rem;">HARDWARE MAC ADDRESS</label>
+              <input class="hitam-input" type="text" id="addUserMac" placeholder="e.g. 24:6F:28:B4:7A:88" style="font-family:monospace; text-transform:uppercase;">
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button class="hitam-btn" style="flex:1; justify-content:center; background:#1b5e20;" onclick="submitAddUser()">
+            Confirm &amp; Create Account
+          </button>
+          <button class="hitam-btn hitam-btn-secondary" onclick="closeAddUserModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- REASSIGN TOKEN & MAC MODAL -->
   <div class="sentinel-modal-backdrop" id="reassignModal">
     <div class="sentinel-modal-card" style="max-width: 520px;">
@@ -248,6 +405,16 @@
         <button onclick="closeEnrollModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:white;">&times;</button>
       </div>
       <div class="sentinel-modal-body">
+        <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:10px 14px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <strong style="color:#166534; font-size:0.85rem; display:block;">⚡ Auto-Detect via USB</strong>
+            <span style="color:#15803d; font-size:0.75rem;">Plug in ESP32 via USB and click Read</span>
+          </div>
+          <button type="button" class="hitam-btn" style="padding:6px 12px; font-size:0.75rem;" id="btnAutoReadUsb" onclick="autoDetectUsbToken()">
+            🔌 Read from USB
+          </button>
+        </div>
+        <input type="hidden" id="enrollPublicKey" value="">
         <div class="hitam-form-group">
           <label class="hitam-form-label">FACULTY MEMBER</label>
           <select class="hitam-input" id="enrollFacultySelect">
@@ -502,36 +669,249 @@
       openEnrollModal();
     }
 
+    async function autoDetectUsbToken() {
+      const btn = document.getElementById("btnAutoReadUsb");
+      if (!("serial" in navigator)) {
+        alert("Web Serial is supported in Google Chrome and Microsoft Edge.");
+        return;
+      }
+      btn.disabled = true;
+      btn.innerText = "Connecting...";
+      let port = null;
+      try {
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 115200 });
+
+        const encoder = new TextEncoder();
+        const decoder = new TextDecoder();
+        const writer = port.writable.getWriter();
+        const reader = port.readable.getReader();
+
+        // Send DEVICE_INFO
+        await writer.write(encoder.encode("DEVICE_INFO\n"));
+        writer.releaseLock();
+
+        let output = "";
+        const start = Date.now();
+        while (Date.now() - start < 3500) {
+          const { value, done } = await Promise.race([
+            reader.read(),
+            new Promise((_, r) => setTimeout(() => r(new Error("timeout")), 3500))
+          ]);
+          if (done) break;
+          if (value) {
+            output += decoder.decode(value);
+            if (output.includes("\n")) break;
+          }
+        }
+        await reader.cancel();
+        reader.releaseLock();
+        await port.close();
+
+        console.log("ESP32 Info:", output);
+        // Parse ID:DEVICE_ID=...:MAC=...:PUBKEY=...
+        const parts = output.trim().split(":");
+        let devId = "", mac = "", pubkey = "";
+        for (const p of parts) {
+          if (p.startsWith("DEVICE_ID=")) devId = p.replace("DEVICE_ID=", "").trim();
+          else if (p.startsWith("MAC=") || p.startsWith("EFUSE_MAC=")) mac = p.replace("MAC=", "").replace("EFUSE_MAC=", "").trim();
+          else if (p.startsWith("PUBKEY=")) pubkey = p.replace("PUBKEY=", "").trim();
+        }
+
+        if (devId) document.getElementById("enrollDeviceId").value = devId;
+        if (mac) document.getElementById("enrollMacAddress").value = mac;
+        if (pubkey) document.getElementById("enrollPublicKey").value = pubkey;
+
+        btn.innerText = "✓ Read Success!";
+        setTimeout(() => { btn.innerText = "🔌 Read from USB"; btn.disabled = false; }, 3000);
+      } catch (err) {
+        console.error("USB read error:", err);
+        alert("Could not read token from USB: " + (err.message || err));
+        btn.innerText = "🔌 Read from USB";
+        btn.disabled = false;
+        if (port) {
+          try { await port.close(); } catch(e){}
+        }
+      }
+    }
+
     async function submitReEnroll() {
       const uId = document.getElementById("enrollFacultySelect").value;
       const devId = document.getElementById("enrollDeviceId").value.trim();
       const mac = document.getElementById("enrollMacAddress").value.trim();
+      const pubkey = document.getElementById("enrollPublicKey").value.trim();
       if (!uId || !devId) {
         alert("Please select a Faculty member and specify Device ID.");
         return;
       }
       try {
+        const payload = {
+          user_id: parseInt(uId),
+          device_id: devId
+        };
+        if (mac) payload.mac_address = mac;
+        if (pubkey) payload.public_verifier = pubkey;
+
         const resp = await fetch("/api/admin/re-enroll", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: parseInt(uId), device_id: devId })
+          body: JSON.stringify(payload)
         });
         const d = await resp.json();
         if (resp.ok) {
-          // If MAC is provided, update it via reassign
-          if (mac) {
-            await fetch("/api/admin/reassign-token", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ device_id: devId, mac_address: mac, target_user_id: parseInt(uId) })
-            });
-          }
           alert(`✓ New Token ${d.device_id} successfully enrolled and linked!`);
           closeEnrollModal();
           loadAdminData();
           loadAuditLogs();
         } else {
-          alert("Re-enrollment failed: " + d.error);
+          alert("Re-enrollment failed: " + (d.error || "Unknown error"));
+        }
+      } catch (e) {
+        alert("Network error while enrolling token.");
+      }
+    }
+
+    let currentDeptFilter = "";
+
+    function openAddUserModal() {
+      document.getElementById("addUserModal").classList.add("active");
+    }
+    function closeAddUserModal() {
+      document.getElementById("addUserModal").classList.remove("active");
+    }
+    function onUserRoleChanged(role) {
+      const hwBox = document.getElementById("facultyHardwareFields");
+      if (hwBox) {
+        hwBox.style.display = (role === "faculty") ? "block" : "none";
+      }
+    }
+
+    function filterDepartment(dept) {
+      currentDeptFilter = dept;
+      document.querySelectorAll(".dept-filter-btn").forEach(btn => {
+        if ((!dept && btn.innerText.includes("All Branches")) || (dept && btn.innerText.trim() === dept)) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+      loadUsersList();
+    }
+
+    async function loadUsersList() {
+      const tbody = document.getElementById("usersTbody");
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px;">Refreshing campus directory...</td></tr>';
+
+      const roleFilter = document.getElementById("userRoleFilter") ? document.getElementById("userRoleFilter").value : "";
+      let url = "/api/admin/users-list?";
+      if (currentDeptFilter) url += `department=${encodeURIComponent(currentDeptFilter)}&`;
+      if (roleFilter) url += `role=${encodeURIComponent(roleFilter)}`;
+
+      try {
+        const resp = await fetch(url);
+        const data = await resp.json();
+        const users = data.users || [];
+
+        if (users.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:#6b7280;">No users found matching current filters.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = users.map(u => `
+          <tr>
+            <td style="font-family:monospace; font-weight:700;">${u.roll_or_emp_id}</td>
+            <td style="font-weight:600;">${u.name}</td>
+            <td style="font-size:0.8rem; color:#4b5563;">${u.email}</td>
+            <td><span class="hitam-badge" style="background:#e0f2fe; color:#0369a1;">${u.department || 'ECE'}</span></td>
+            <td>
+              <span class="hitam-badge ${u.role === 'faculty' ? 'hitam-badge-warning' : (u.role === 'admin' ? 'hitam-badge-danger' : 'hitam-badge-success')}">
+                ${u.role.toUpperCase()}
+              </span>
+            </td>
+            <td>
+              ${u.device_id ? `<span style="font-family:monospace; font-weight:700; color:#15803d; font-size:0.78rem;">🔑 ${u.device_id}</span>` : `<span style="color:#9ca3af; font-size:0.75rem;">None (Standard Auth)</span>`}
+            </td>
+            <td><span class="hitam-badge hitam-badge-success">ACTIVE</span></td>
+            <td style="text-align:center;">
+              ${u.role !== 'admin' ? `
+                <button class="hitam-btn hitam-btn-danger" style="padding:4px 8px; font-size:0.7rem;" onclick="deleteUser(${u.id}, '${u.name}')">
+                  Delete
+                </button>
+              ` : `<span style="font-size:0.7rem; color:#9ca3af;">Protected</span>`}
+            </td>
+          </tr>
+        `).join("");
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:red;">Failed to load user directory.</td></tr>';
+      }
+    }
+
+    async function submitAddUser() {
+      const name = document.getElementById("addUserName").value.trim();
+      const roll = document.getElementById("addUserRoll").value.trim().toUpperCase();
+      const email = document.getElementById("addUserEmail").value.trim().toLowerCase();
+      const role = document.getElementById("addUserRole").value;
+      const dept = document.getElementById("addUserDept").value;
+      const semester = document.getElementById("addUserSemester").value.trim();
+      const pass = document.getElementById("addUserPassword").value.trim() || "hitam@123";
+      const devId = document.getElementById("addUserDeviceId").value.trim();
+      const mac = document.getElementById("addUserMac").value.trim();
+
+      if (!name || !roll || !email) {
+        alert("Please provide Name, Roll Number / Employee ID, and Institutional Email.");
+        return;
+      }
+
+      try {
+        const resp = await fetch("/api/admin/add-user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            roll_or_emp_id: roll,
+            email,
+            role,
+            department: dept,
+            semester,
+            password: pass,
+            device_id: (role === "faculty") ? devId : null,
+            mac_address: (role === "faculty") ? mac : null
+          })
+        });
+
+        const data = await resp.json();
+        if (resp.ok) {
+          alert(`✓ Account Created Successfully!\n\nName: ${name}\nID: ${roll}\nRole: ${role.toUpperCase()}\nDepartment: ${dept}\nPassword: ${pass}\n\nUser can now log into the portal immediately.`);
+          closeAddUserModal();
+          loadUsersList();
+          loadAdminData();
+          loadFacultyList();
+          loadAuditLogs();
+        } else {
+          alert("Error: " + (data.error || "Failed to create user."));
+        }
+      } catch (err) {
+        alert("Network error: Could not reach backend server.");
+      }
+    }
+
+    async function deleteUser(userId, userName) {
+      if (!confirm(`Are you sure you want to delete ${userName} from the institution records?`)) return;
+      try {
+        const resp = await fetch("/api/admin/delete-user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId })
+        });
+        const d = await resp.json();
+        if (resp.ok) {
+          alert(`✓ User ${userName} deleted successfully.`);
+          loadUsersList();
+          loadAdminData();
+          loadAuditLogs();
+        } else {
+          alert("Error: " + d.error);
         }
       } catch (e) {
         alert("Network error.");
@@ -542,6 +922,7 @@
     loadFacultyList();
     loadAdminData();
     loadAuditLogs();
+    loadUsersList();
   </script>
 </body>
 </html>

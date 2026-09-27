@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HITAM Campus Portal | Academic ERP &amp; SentinelKey Security Gateway</title>
   <link rel="stylesheet" href="css/hitam_theme.css">
+  <script src="js/config.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -561,38 +562,47 @@
         </div>
       </div>
 
-      <!-- 4 PRE-CONFIGURED FACULTY ACCOUNTS MATRIX -->
-      <div class="faculty-matrix-box">
-        <div class="faculty-matrix-header">
-          <strong>⚡ Pre-Configured Faculty Tokens (Click to Test):</strong>
-          <span class="faculty-matrix-badge">4 Hardware Keys</span>
+      <!-- 3D SILICON PUF LATTICE ANIMATION -->
+      <div style="position:relative; margin-bottom:20px;">
+        <canvas id="siliconLattice3D" style="width:100%; height:190px; border-radius:10px; background:radial-gradient(circle at center, #0a2e12 0%, #031407 100%); border:1px solid rgba(74, 155, 62, 0.4); box-shadow:0 8px 24px rgba(0,0,0,0.25); display:block;"></canvas>
+        <div style="position:absolute; bottom:10px; left:14px; right:14px; display:flex; justify-content:space-between; align-items:center; pointer-events:none;">
+          <span style="font-size:0.72rem; color:#86efac; font-family:monospace; font-weight:700; letter-spacing:0.5px;">
+            ⚡ SILICON-PUF CRYPTO CORE: ARMED
+          </span>
+          <span style="font-size:0.7rem; color:#ffd54f; font-family:monospace; background:rgba(0,0,0,0.5); padding:2px 8px; border-radius:10px;">
+            NIST P-256 (SECP256R1)
+          </span>
         </div>
-        <div class="faculty-chips-grid">
-          <div class="faculty-chip" onclick="quickSelectFaculty('FAC-ECE-101', 'faculty@123', 'Dr. K. Ramesh', 'ESP32-SENTINEL-FAC01')">
-            <span class="fac-name">Dr. K. Ramesh (HOD)</span>
-            <span class="fac-token">🔑 ESP32-SENTINEL-FAC01</span>
+      </div>
+
+      <!-- LIVE HARDWARE ROOT-OF-TRUST TELEMETRY -->
+      <div class="faculty-matrix-box" style="border-left: 4px solid var(--hitam-primary);">
+        <div class="faculty-matrix-header">
+          <strong>Institutional Cryptographic Telemetry</strong>
+          <span class="faculty-matrix-badge" style="background:#15803d; color:white;">Zero Flash Keys</span>
+        </div>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+          <div style="background:#f0fdf4; padding:10px; border-radius:6px; border:1px solid #bbf7d0;">
+            <div style="font-size:0.7rem; color:#166534; font-weight:700;">CRYPTOGRAPHIC SCHEME</div>
+            <div style="font-size:0.8rem; font-weight:800; color:#0f5132; margin-top:2px;">Asymmetric ECDSA</div>
           </div>
-          <div class="faculty-chip" onclick="quickSelectFaculty('FAC-ECE-102', 'faculty@123', 'Dr. P. Sunitha', 'ESP32-SENTINEL-FAC02')">
-            <span class="fac-name">Dr. P. Sunitha (Assoc Prof)</span>
-            <span class="fac-token">🔑 ESP32-SENTINEL-FAC02</span>
+          <div style="background:#f0fdf4; padding:10px; border-radius:6px; border:1px solid #bbf7d0;">
+            <div style="font-size:0.7rem; color:#166534; font-weight:700;">ENTROPY DIGEST</div>
+            <div style="font-size:0.8rem; font-weight:800; color:#0f5132; margin-top:2px;">SRAM Micro-variations</div>
           </div>
-          <div class="faculty-chip" onclick="quickSelectFaculty('FAC-ECE-103', 'faculty@123', 'Dr. V. Rajesh', 'ESP32-SENTINEL-FAC03')">
-            <span class="fac-name">Dr. V. Rajesh (Assoc Prof)</span>
-            <span class="fac-token">🔑 ESP32-SENTINEL-FAC03</span>
+          <div style="background:#f0fdf4; padding:10px; border-radius:6px; border:1px solid #bbf7d0;">
+            <div style="font-size:0.7rem; color:#166534; font-weight:700;">HARDWARE TOKENS</div>
+            <div style="font-size:0.8rem; font-weight:800; color:#0f5132; margin-top:2px;">2 ESP32 Units Active</div>
           </div>
-          <div class="faculty-chip" onclick="quickSelectFaculty('FAC-ECE-104', 'faculty@123', 'Dr. M. Anitha', 'ESP32-SENTINEL-FAC04')">
-            <span class="fac-name">Dr. M. Anitha (Asst Prof)</span>
-            <span class="fac-token">🔑 ESP32-SENTINEL-FAC04</span>
+          <div style="background:#f0fdf4; padding:10px; border-radius:6px; border:1px solid #bbf7d0;">
+            <div style="font-size:0.7rem; color:#166534; font-weight:700;">PRESENCE ATTESTATION</div>
+            <div style="font-size:0.8rem; font-weight:800; color:#0f5132; margin-top:2px;">Touch Pin D4 / BOOT</div>
           </div>
         </div>
 
-        <div style="margin-top: 10px; display: flex; gap: 8px;">
-          <button class="hitam-btn hitam-btn-outline" style="flex:1; font-size:0.72rem; padding:6px;" onclick="quickSelectStudent('23E51A0417', 'Sri@7254')">
-            🎓 Student: Srinath (23E51A0417)
-          </button>
-          <button class="hitam-btn hitam-btn-outline" style="flex:1; font-size:0.72rem; padding:6px;" onclick="quickSelectAdmin('admin@hitam.org', 'admin@123')">
-            🛡️ College Admin (Exam Cell)
-          </button>
+        <div style="margin-top:14px; font-size:0.75rem; color:#4b5563; line-height:1.4;">
+          🔒 Private keys are dynamically reconstructed from silicon SRAM upon physical power-on and instantly wiped with zero-knowledge flash guarantees.
         </div>
       </div>
     </div>
@@ -682,22 +692,19 @@
           </p>
         </div>
 
-        <!-- Testing Simulator Selector -->
-        <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:6px; padding:12px; margin-bottom:18px;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-            <input type="checkbox" id="chkEmulation" checked onchange="toggleEmulation(this.checked)">
-            <label for="chkEmulation" style="cursor:pointer; font-size:0.82rem; font-weight:700; color:#374151;">
-              Test Mode: Virtual Silicon PUF Core (Simulate Board)
-            </label>
+        <!-- Physical Hardware Protocol Instructions -->
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px; margin-bottom:18px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; font-weight:700; font-size:0.82rem; color:#1e293b;">
+            <span>🛡️ Hardware Handshake Protocol</span>
+            <span style="margin-left:auto; font-size:0.7rem; background:#dcfce7; color:#15803d; padding:2px 8px; border-radius:12px; font-weight:700;">Zero Flash Keys</span>
           </div>
-          <div id="emulationSelectorWrap" style="font-size:0.78rem; color:#6b7280;">
-            Simulated Token Identity:
-            <select id="selSimulatedToken" class="hitam-input-styled" style="padding:4px 8px; font-size:0.76rem; margin-top:4px;" onchange="onSimulatedTokenChange(this.value)">
-              <option value="ESP32-SENTINEL-FAC01">ESP32-SENTINEL-FAC01 (Dr. K. Ramesh)</option>
-              <option value="ESP32-SENTINEL-FAC02">ESP32-SENTINEL-FAC02 (Dr. P. Sunitha)</option>
-              <option value="ESP32-SENTINEL-FAC03">ESP32-SENTINEL-FAC03 (Dr. V. Rajesh)</option>
-              <option value="ESP32-SENTINEL-FAC04">ESP32-SENTINEL-FAC04 (Dr. M. Anitha)</option>
-            </select>
+          <p style="font-size:0.78rem; color:#64748b; margin:0 0 10px 0; line-height:1.4;">
+            1. Connect your assigned SentinelKey physical USB token to your port.<br>
+            2. Click <strong>"Connect &amp; Sign Challenge"</strong> and authorize the ESP32 port.<br>
+            3. When the blue LED blinks, press the <strong>BOOT button or touch Pin D4</strong> to confirm physical presence.
+          </p>
+          <div id="hardwareStatusText" style="font-size:0.75rem; font-family:monospace; color:#0f766e; background:#f0fdfa; padding:6px 10px; border-radius:4px; border:1px solid #ccfbf1;">
+            ● Awaiting USB hardware connection...
           </div>
         </div>
 
@@ -1039,6 +1046,136 @@
         alertBox.innerText = 'Server communication error.';
       }
     }
+
+    // -------------------------------------------------------------------------
+    // 3D SILICON PUF LATTICE & CRYPTOGRAPHIC CIRCUIT ANIMATION
+    // -------------------------------------------------------------------------
+    (function initSiliconLattice3D() {
+      const canvas = document.getElementById("siliconLattice3D");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+
+      let width, height;
+      function resize() {
+        if (!canvas.parentElement) return;
+        width = canvas.width = canvas.parentElement.clientWidth;
+        height = canvas.height = 190;
+      }
+      window.addEventListener("resize", resize);
+      setTimeout(resize, 50);
+
+      // 3D Node structure (silicon crystal atoms + crypto nodes)
+      const nodes = [];
+      const nodeCount = 42;
+      const radius = 68;
+
+      for (let i = 0; i < nodeCount; i++) {
+        const phi = Math.acos(-1 + (2 * i) / nodeCount);
+        const theta = Math.sqrt(nodeCount * Math.PI) * phi;
+        nodes.push({
+          x: radius * Math.cos(theta) * Math.sin(phi),
+          y: radius * Math.sin(theta) * Math.sin(phi),
+          z: radius * Math.cos(phi),
+          pulse: Math.random() * Math.PI * 2,
+          isKeyNode: (i % 5 === 0)
+        });
+      }
+
+      let angleX = 0.004;
+      let angleY = 0.007;
+      let rotX = 0;
+      let rotY = 0;
+
+      canvas.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) / width - 0.5;
+        const my = (e.clientY - rect.top) / height - 0.5;
+        angleY = mx * 0.018;
+        angleX = my * 0.018;
+      });
+
+      function render() {
+        if (!width || !height) {
+          resize();
+          requestAnimationFrame(render);
+          return;
+        }
+        ctx.clearRect(0, 0, width, height);
+
+        rotX += angleX;
+        rotY += angleY;
+
+        const cx = width / 2;
+        const cy = height / 2;
+        const fov = 160;
+
+        const projected = nodes.map(n => {
+          let x1 = n.x * Math.cos(rotY) - n.z * Math.sin(rotY);
+          let z1 = n.z * Math.cos(rotY) + n.x * Math.sin(rotY);
+          let y2 = n.y * Math.cos(rotX) - z1 * Math.sin(rotX);
+          let z2 = z1 * Math.cos(rotX) + n.y * Math.sin(rotX);
+
+          const scale = fov / (fov + z2 + 80);
+          return {
+            x: cx + x1 * scale,
+            y: cy + y2 * scale,
+            z: z2,
+            scale: scale,
+            isKeyNode: n.isKeyNode,
+            pulse: n.pulse
+          };
+        });
+
+        // Draw circuit connections between neighboring nodes
+        ctx.lineWidth = 0.8;
+        for (let i = 0; i < projected.length; i++) {
+          for (let j = i + 1; j < projected.length; j++) {
+            const p1 = projected[i];
+            const p2 = projected[j];
+            const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+            if (dist < 52) {
+              const alpha = (1 - dist / 52) * 0.45;
+              ctx.strokeStyle = `rgba(74, 222, 128, ${alpha})`;
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Draw nodes with pulsating glow
+        const now = Date.now() * 0.003;
+        projected.sort((a, b) => a.z - b.z);
+        projected.forEach(p => {
+          const r = Math.max(1.5, (p.isKeyNode ? 3.6 : 2.2) * p.scale);
+          const glow = (Math.sin(now + p.pulse) + 1) / 2;
+          
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+          if (p.isKeyNode) {
+            ctx.fillStyle = `rgba(255, 215, 0, ${0.75 + glow * 0.25})`;
+            ctx.shadowColor = "#ffd54f";
+            ctx.shadowBlur = 8;
+          } else {
+            ctx.fillStyle = `rgba(74, 222, 128, ${0.65 + glow * 0.35})`;
+            ctx.shadowColor = "#4ade80";
+            ctx.shadowBlur = 6;
+          }
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+
+        // Floating silicon address annotations
+        ctx.fillStyle = "rgba(134, 239, 172, 0.22)";
+        ctx.font = "9px monospace";
+        ctx.fillText("SRAM_ADDR[0x50000220] :: 4096-BIT SILICON PUF", 16, 22);
+        ctx.fillText("ENTROPY QUALITY: 0.9998 :: NIST P-256 GENERATOR", 16, 36);
+
+        requestAnimationFrame(render);
+      }
+      render();
+    })();
   </script>
 </body>
 </html>

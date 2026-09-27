@@ -3,11 +3,29 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "routes": [
-    { "src": "^/$", "dest": "/login.html" },
-    { "src": "^/login$", "dest": "/login.html" },
-    { "src": "^/admin$", "dest": "/admin_dashboard.html" },
-    { "src": "^/student$", "dest": "/student_dashboard.html" },
-    { "src": "^/faculty$", "dest": "/faculty_dashboard.html" },
-    { "src": "^/challenge$", "dest": "/challenge.html" }
+    {
+      "src": "^/$",
+      "dest": "/login.html"
+    },
+    {
+      "src": "^/login$",
+      "dest": "/login.html"
+    },
+    {
+      "src": "^/admin$",
+      "dest": "/admin_dashboard.html"
+    },
+    {
+      "src": "^/student$",
+      "dest": "/student_dashboard.html"
+    },
+    {
+      "src": "^/faculty$",
+      "dest": "/faculty_dashboard.html"
+    },
+    {
+      "src": "^/challenge$",
+      "dest": "/challenge.html"
+    }
   ]
 }

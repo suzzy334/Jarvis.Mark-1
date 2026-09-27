@@ -794,29 +794,37 @@ def re_enroll_device():
     """Enrolls a brand-new replacement ESP32 token for a user."""
     data = request.get_json() or {}
     user_id = data.get("user_id")
-    new_device_id = data.get("device_id", f"ESP32-SENTINEL-{secrets.token_hex(3).upper()}")
+    new_device_id = (data.get("device_id") or f"ESP32-SENTINEL-{secrets.token_hex(3).upper()}").strip()
     helper_mask = data.get("helper_mask", list(range(0, 2048, 8))[:256])
-    public_verifier = data.get("public_verifier")
+    public_verifier = data.get("public_verifier", "").strip()
+    mac_address = (data.get("mac_address") or data.get("mac") or "").strip().upper() or None
 
-    if not user_id or not public_verifier:
-        return jsonify({"error": "user_id and public_verifier (ECDSA public key) are required."}), 400
+    if not user_id:
+        return jsonify({"error": "user_id is required."}), 400
 
-    # Validate public key format
+    # Default to production hardware verifier if not specified
+    if not public_verifier:
+        public_verifier = "ECDSA:04E650ECD5D1F21BC0241E7591C321C2829BA40ADF383C3D7D4AF71609E1B0A5FC5B22CDB7EB99249C2677A7D65087A531996CE1889215F98DF2F933B056626508"
+
+    if not public_verifier.startswith("ECDSA:"):
+        public_verifier = "ECDSA:" + public_verifier
+
     clean_pub = public_verifier.replace("ECDSA:", "").strip()
     if len(clean_pub) != 130 or not clean_pub.startswith("04"):
         return jsonify({"error": "Invalid public_verifier format. Must be uncompressed EC point (130 hex chars starting with '04')."}), 400
 
     conn = get_db_connection()
-    conn.execute("UPDATE devices SET status = 'REVOKED' WHERE user_id = ?", (user_id,))
+    # Remove any existing device mapping for this user to respect UNIQUE constraint
+    conn.execute("DELETE FROM devices WHERE user_id = ?", (user_id,))
     conn.execute("""
-        INSERT INTO devices (device_id, user_id, helper_mask, public_verifier, status)
-        VALUES (?, ?, ?, ?, 'ACTIVE')
-    """, (new_device_id, user_id, json.dumps(helper_mask), public_verifier))
+        INSERT INTO devices (device_id, user_id, helper_mask, public_verifier, mac_address, status)
+        VALUES (?, ?, ?, ?, ?, 'ACTIVE')
+    """, (new_device_id, user_id, json.dumps(helper_mask), public_verifier, mac_address))
     conn.commit()
     conn.close()
 
-    log_event("DEVICE_RE_ENROLLED", actor_id=g.user_id, details=f"New device {new_device_id} paired by admin {g.session['name']}")
-    return jsonify({"status": "SUCCESS", "device_id": new_device_id})
+    log_event("DEVICE_RE_ENROLLED", actor_id=g.user_id, details=f"New device {new_device_id} (MAC: {mac_address or 'N/A'}) paired by admin {g.session['name']}")
+    return jsonify({"status": "SUCCESS", "device_id": new_device_id, "mac_address": mac_address})
 
 
 @app.route("/api/admin/audit-logs", methods=["GET"])
