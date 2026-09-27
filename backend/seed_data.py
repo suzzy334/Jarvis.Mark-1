@@ -57,6 +57,18 @@ def seed_database():
     ))
     admin_id = cursor.lastrowid
 
+    # 1.1 System Administrator Physical SentinelKey Hardware Token
+    cursor.execute("""
+        INSERT INTO devices (device_id, user_id, helper_mask, public_verifier, mac_address, status)
+        VALUES (?, ?, ?, ?, ?, 'ACTIVE')
+    """, (
+        "ESP32-SENTINEL-ADMIN01",
+        admin_id,
+        json.dumps(sample_helper_mask),
+        "ECDSA:04E650ECD5D1F21BC0241E7591C321C2829BA40ADF383C3D7D4AF71609E1B0A5FC5B22CDB7EB99249C2677A7D65087A531996CE1889215F98DF2F933B056626508",
+        "FC:E8:C0:E1:3D:08"
+    ))
+
     # 2. Four (4) Distinct Faculty Members with SentinelKey PUF Tokens
     faculty_profiles = [
         {
@@ -114,18 +126,24 @@ def seed_database():
         f_id = cursor.lastrowid
         faculty_ids.append((f_id, fac))
 
-        # Derive SHA-256 verifier from deterministic golden key
-        verifier = hashlib.sha256(bytes.fromhex(fac["golden_key"])).hexdigest()
+        # Derive verifier: use physical ECDSA P-256 verifier for FAC01
+        if fac["device_id"] == "ESP32-SENTINEL-FAC01":
+            verifier = "ECDSA:04E650ECD5D1F21BC0241E7591C321C2829BA40ADF383C3D7D4AF71609E1B0A5FC5B22CDB7EB99249C2677A7D65087A531996CE1889215F98DF2F933B056626508"
+            mac = "FC:E8:C0:E1:3D:08"
+        else:
+            verifier = hashlib.sha256(bytes.fromhex(fac["golden_key"])).hexdigest()
+            mac = None
 
         # Strictly bind 1-to-1: Faculty Account <-> SentinelKey USB Token
         cursor.execute("""
-            INSERT INTO devices (device_id, user_id, helper_mask, public_verifier, status)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO devices (device_id, user_id, helper_mask, public_verifier, mac_address, status)
+            VALUES (?, ?, ?, ?, ?, ?)
         """, (
             fac["device_id"],
             f_id,
             json.dumps(sample_helper_mask),
             verifier,
+            mac,
             "ACTIVE"
         ))
 

@@ -765,9 +765,6 @@
     let activeRole = 'student';
     let pendingAuthData = null;
 
-    // Default simulation state
-    window.sentinelBridge.isEmulationMode = true;
-
     function switchRoleTab(role) {
       activeRole = role;
       document.querySelectorAll('.role-tab-btn').forEach(b => b.classList.remove('active'));
@@ -798,13 +795,13 @@
         btnText.innerText = 'Verify Credentials & Connect Token';
       } else if (role === 'admin') {
         document.getElementById('tabAdmin').classList.add('active');
-        tabInst.className = 'tab-instruction-banner';
-        tabInst.innerHTML = '<strong>Examination &amp; IT Cell:</strong> Administrator portal for device management, emergency OTP issuance, and cryptographic audit monitoring.';
+        tabInst.className = 'tab-instruction-banner faculty-mode';
+        tabInst.innerHTML = '<strong>🔒 Administrator PUF Protection Active:</strong> Enter your administrative email and password. Physical SentinelKey USB token attestation with Pin D4 presence touch is strictly required.';
         lblId.innerText = 'ADMINISTRATIVE EMAIL';
         inpId.placeholder = 'e.g. admin@hitam.org';
         inpId.value = 'admin@hitam.org';
         inpPass.value = 'admin@123';
-        btnText.innerText = 'Sign In to Admin Console';
+        btnText.innerText = 'Verify Credentials & Connect Token';
       }
     }
 
@@ -812,7 +809,6 @@
       switchRoleTab('faculty');
       document.getElementById('identifier').value = empId;
       document.getElementById('password').value = pass;
-      document.getElementById('selSimulatedToken').value = devId;
       window.sentinelBridge.setDeviceId(devId);
     }
 
@@ -826,11 +822,6 @@
       switchRoleTab('admin');
       document.getElementById('identifier').value = email;
       document.getElementById('password').value = pass;
-    }
-
-    function onSimulatedTokenChange(devId) {
-      window.sentinelBridge.setDeviceId(devId);
-      document.getElementById('badgeTargetDeviceId').innerText = devId;
     }
 
     async function handlePortalLogin(e) {
@@ -861,11 +852,11 @@
         }
 
         if (data.status === 'REQUIRE_HARDWARE_TOKEN') {
-          // Faculty Member - Launch Hardware Token Gateway Modal
+          // Hardware token attestation required (Faculty or Administrator)
           pendingAuthData = data;
           openHardwareModal();
         } else if (data.status === 'SUCCESS') {
-          // Student or Admin - Direct Login!
+          // Direct login for students
           if (data.session_token) {
             localStorage.setItem('sentinel_session_token', data.session_token);
             sessionStorage.setItem('sentinel_session_token', data.session_token);
@@ -886,30 +877,21 @@
 
     function openHardwareModal() {
       document.getElementById('hardwareModal').classList.add('active');
+      const isAdm = (pendingAuthData.role === 'admin');
+      const modalHeader = document.querySelector('#hardwareModal .sentinel-modal-header h3');
+      if (modalHeader) {
+        modalHeader.innerHTML = isAdm ? '🔑 Administrator SentinelKey Attestation' : '🔑 Faculty Hardware Attestation';
+      }
       document.getElementById('authFacultyName').innerText = pendingAuthData.name;
       document.getElementById('badgeTargetDeviceId').innerText = pendingAuthData.device_id;
-      document.getElementById('selSimulatedToken').value = pendingAuthData.device_id;
       window.sentinelBridge.setDeviceId(pendingAuthData.device_id);
 
       document.getElementById('usbStatusText').innerText = `Ready to Attest: ${pendingAuthData.device_id}`;
-      document.getElementById('usbSubText').innerText = `Plug in token for ${pendingAuthData.name} (${pendingAuthData.roll_or_emp_id})`;
+      document.getElementById('usbSubText').innerText = `Plug in physical SentinelKey token for ${pendingAuthData.name} (${pendingAuthData.roll_or_emp_id || (isAdm ? 'Administrator' : 'Faculty')})`;
     }
 
     function closeHardwareModal() {
       document.getElementById('hardwareModal').classList.remove('active');
-    }
-
-    function toggleEmulation(checked) {
-      window.sentinelBridge.isEmulationMode = checked;
-      document.getElementById('emulationSelectorWrap').style.opacity = checked ? '1' : '0.4';
-      const statusText = document.getElementById('usbStatusText');
-      if (checked) {
-        statusText.innerText = 'Virtual Silicon PUF Core Active';
-        document.getElementById('statusPulse').classList.add('connected');
-      } else {
-        statusText.innerText = 'Physical ESP32 Hardware Mode Selected';
-        document.getElementById('statusPulse').classList.remove('connected');
-      }
     }
 
     async function executeHardwareHandshake() {
@@ -931,16 +913,13 @@
 
       try {
         // 1. Fetch challenge nonce from server
-        const challengeResp = await fetch(`/api/auth/challenge?user_id=${pendingAuthData.user_id}`);
+        const challengeResp = await fetch(`/api/auth/challenge?user_id=${pendingAuthData.user_id}&action_type=login`);
         const challengeData = await challengeResp.json();
         const nonce = challengeData.nonce;
 
-        // Ensure bridge target device matches faculty account
-        const targetDeviceId = window.sentinelBridge.isEmulationMode 
-          ? document.getElementById('selSimulatedToken').value 
-          : pendingAuthData.device_id;
+        const targetDeviceId = pendingAuthData.device_id;
 
-        // 2. Hardware / Virtual Silicon executes challenge
+        // 2. Hardware executes challenge over Web Serial
         const signature = await window.sentinelBridge.executeChallenge(nonce, targetDeviceId);
 
         // 3. Verify signature with server
@@ -952,7 +931,7 @@
             user_id: pendingAuthData.user_id,
             nonce: nonce,
             signature: signature,
-            device_id: targetDeviceId,
+            device_id: window.sentinelBridge.activeDeviceId || targetDeviceId,
             mac_address: (window.sentinelBridge && window.sentinelBridge.activeMac) ? window.sentinelBridge.activeMac : undefined
           })
         });
@@ -960,7 +939,8 @@
         const verifyData = await verifyResp.json();
 
         if (verifyResp.ok && verifyData.status === 'SUCCESS') {
-          statusText.innerText = 'Hardware Attestation Successful! Loading Faculty Portal...';
+          const destName = (verifyData.role === 'admin') ? 'Administrator Console...' : 'Faculty Portal...';
+          statusText.innerText = `Hardware Attestation Successful! Loading ${destName}`;
           document.getElementById('statusPulse').classList.add('connected');
           if (verifyData.session_token) {
             localStorage.setItem('sentinel_session_token', verifyData.session_token);

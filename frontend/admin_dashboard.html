@@ -440,6 +440,12 @@
   </div>
 
   <script>
+    const currentSessionToken = localStorage.getItem("sentinel_session_token") || sessionStorage.getItem("sentinel_session_token");
+    if (!currentSessionToken) {
+      console.warn("No active admin session found. Redirecting to login...");
+      window.location.href = "login.html";
+    }
+
     let facultyCache = [];
 
     async function loadFacultyList() {
@@ -606,13 +612,19 @@
       }
 
       try {
+        const token = localStorage.getItem("sentinel_session_token") || sessionStorage.getItem("sentinel_session_token") || "";
         const resp = await fetch("/api/admin/reassign-token", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+            "X-Session-Token": token
+          },
           body: JSON.stringify({
             device_id: deviceId,
             mac_address: mac,
-            target_user_id: parseInt(targetUserId)
+            target_user_id: parseInt(targetUserId),
+            session_token: token
           })
         });
         const d = await resp.json();
@@ -633,10 +645,15 @@
       if (!confirm(`Are you sure you want to REVOKE ${deviceId}? This device will be permanently blacklisted until re-enrolled.`)) return;
 
       try {
+        const token = localStorage.getItem("sentinel_session_token") || sessionStorage.getItem("sentinel_session_token") || "";
         const resp = await fetch("/api/admin/revoke-device", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ device_id: deviceId })
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+            "X-Session-Token": token
+          },
+          body: JSON.stringify({ device_id: deviceId, session_token: token })
         });
         const d = await resp.json();
         alert(d.message);
@@ -760,16 +777,22 @@
         return;
       }
       try {
+        const token = localStorage.getItem("sentinel_session_token") || sessionStorage.getItem("sentinel_session_token") || "";
         const payload = {
           user_id: parseInt(uId),
-          device_id: devId
+          device_id: devId,
+          session_token: token
         };
         if (mac) payload.mac_address = mac;
         if (pubkey) payload.public_verifier = pubkey;
 
         const resp = await fetch("/api/admin/re-enroll", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+            "X-Session-Token": token
+          },
           body: JSON.stringify(payload)
         });
         const d = await resp.json();
