@@ -27,7 +27,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from database import get_db_connection, init_db, log_event
 
 app = Flask(__name__, static_folder="../frontend", static_url_path="")
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, supports_credentials=True, origins=["https://jarvis-mark-1.vercel.app"])
 
 # Rate limiting state (in-memory, resets on restart)
 _login_attempts = {}  # {identifier: {"count": N, "last_attempt": datetime}}
