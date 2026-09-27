@@ -744,7 +744,7 @@
         const macMatch = output.match(/(?:EFUSE_MAC|MAC)=([0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2}){5})/);
         if (macMatch) mac = macMatch[1].toUpperCase();
 
-        const devMatch = output.match(/DEVICE_ID=([^:\r\n]+)/);
+        const devMatch = output.match(/DEVICE_ID=([^:|\r\n]+)/);
         if (devMatch) devId = devMatch[1].trim();
 
         const pubMatch = output.match(/PUBKEY=([0-9A-Fa-f]{130})/);

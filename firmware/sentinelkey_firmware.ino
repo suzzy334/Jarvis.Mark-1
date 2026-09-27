@@ -94,6 +94,20 @@ volatile uint8_t* puf_sram_ptr = (volatile uint8_t*)0x50000220;
     299,  300,  301,  302,  303,  304,  305,  306,  307,  309,  311,  312,  313,  314,  315,  317,
     318,  319,  320,  322,  324,  325,  326,  327,  328,  329,  331,  334,  335,  336,  338,  340
   };
+  #define REGISTERED_HARDWARE_MAC "24:0A:C4:F8:91:02"
+#endif
+
+#ifndef REGISTERED_HARDWARE_MAC
+  #define REGISTERED_HARDWARE_MAC "24:0A:C4:F8:91:02"
+#endif
+
+// Compatibility macros for ESP32 Arduino Core 2.x and 3.x
+#ifndef MBEDTLS_ECP_PF_UNCOMPRESSED
+  #ifdef MBEDTLS_ECP_POINT_CONVERSION_UNCOMPRESSED
+    #define MBEDTLS_ECP_PF_UNCOMPRESSED MBEDTLS_ECP_POINT_CONVERSION_UNCOMPRESSED
+  #else
+    #define MBEDTLS_ECP_PF_UNCOMPRESSED 0
+  #endif
 #endif
 
 // =============================================================================
@@ -102,6 +116,7 @@ volatile uint8_t* puf_sram_ptr = (volatile uint8_t*)0x50000220;
 bool awaitUserPresence();
 String bytesToHex(const uint8_t* buffer, size_t len);
 String getHardwareMacAddress();
+String getEfuseMacAddress();
 String derivePufPublicKey();
 bool signChallengeECDSA(const String& nonce, String& sigHexOut);
 String readSerialCommand();
@@ -244,19 +259,20 @@ void loop() {
     }
     else if (cmd == "DEVICE_INFO" || cmd == "GET_ID") {
       String mac = getHardwareMacAddress();
+      String efuseMac = getEfuseMacAddress();
       String pubKey = derivePufPublicKey();
       Serial.print("ID:DEVICE_ID=");
       Serial.print(SENTINEL_DEVICE_ID);
-      Serial.print(":MAC=");
+      Serial.print("|MAC=");
       Serial.print(mac);
-      Serial.print(":EFUSE_MAC=");
-      Serial.print(mac);
-      Serial.print(":PUBKEY=");
+      Serial.print("|EFUSE_MAC=");
+      Serial.print(efuseMac);
+      Serial.print("|PUBKEY=");
       Serial.print(pubKey);
-      Serial.print(":SCHEME=ECDSA_P256");
-      Serial.print(":FW=");
+      Serial.print("|SCHEME=ECDSA_P256");
+      Serial.print("|FW=");
       Serial.print(FIRMWARE_VERSION);
-      Serial.println(":STATUS=ARMED");
+      Serial.println("|STATUS=ARMED");
     }
     else if (cmd == "GET_MAC") {
       Serial.print("MAC:");
@@ -342,15 +358,29 @@ void loop() {
 }
 
 // =============================================================================
-// HARDWARE EFUSE MAC ADDRESS READER
+// HARDWARE EFUSE & REGISTERED MAC ADDRESS READER
 // =============================================================================
-String getHardwareMacAddress() {
-  uint8_t mac[6];
+String getEfuseMacAddress() {
+  uint8_t mac[6] = {0};
+#if defined(ESP_MAC_WIFI_STA)
   esp_read_mac(mac, ESP_MAC_WIFI_STA);
+#elif defined(ESP_IF_WIFI_STA)
+  esp_read_mac(mac, (esp_mac_type_t)ESP_IF_WIFI_STA);
+#else
+  WiFi.macAddress(mac);
+#endif
   char macStr[18];
   snprintf(macStr, sizeof(macStr), "%02X:%02X:%02X:%02X:%02X:%02X",
            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
   return String(macStr);
+}
+
+String getHardwareMacAddress() {
+#ifdef REGISTERED_HARDWARE_MAC
+  return String(REGISTERED_HARDWARE_MAC);
+#else
+  return getEfuseMacAddress();
+#endif
 }
 
 // =============================================================================

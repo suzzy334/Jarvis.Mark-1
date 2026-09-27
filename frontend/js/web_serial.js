@@ -76,18 +76,23 @@ class SentinelKeyBridge {
       let detectedPubkey = "";
       
       if (infoResp) {
-        const parts = infoResp.split(":");
-        for (const p of parts) {
-          if (p.startsWith("DEVICE_ID=")) {
-            detectedId = p.replace("DEVICE_ID=", "").trim();
-            this.activeDeviceId = detectedId;
-          } else if (p.startsWith("MAC=") || p.startsWith("EFUSE_MAC=")) {
-            detectedMac = p.replace("MAC=", "").replace("EFUSE_MAC=", "").trim();
-            this.activeMac = detectedMac;
-          } else if (p.startsWith("PUBKEY=")) {
-            detectedPubkey = p.replace("PUBKEY=", "").trim();
-            this.activePubkey = detectedPubkey;
-          }
+        const devMatch = infoResp.match(/DEVICE_ID=([^:|\r\n]+)/);
+        if (devMatch) {
+          detectedId = devMatch[1].trim();
+          this.activeDeviceId = detectedId;
+        }
+
+        const macMatch = infoResp.match(/\bMAC=([0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2}){5})/) ||
+                         infoResp.match(/\bEFUSE_MAC=([0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2}){5})/);
+        if (macMatch) {
+          detectedMac = macMatch[1].trim().toUpperCase();
+          this.activeMac = detectedMac;
+        }
+
+        const pubMatch = infoResp.match(/PUBKEY=([0-9A-Fa-f]{130})/);
+        if (pubMatch) {
+          detectedPubkey = pubMatch[1].trim();
+          this.activePubkey = detectedPubkey;
         }
       }
 
