@@ -25,6 +25,10 @@
 #include <WiFi.h>
 #include <esp_bt.h>
 #include <esp_wifi.h>
+#include <esp_system.h>
+#if __has_include(<esp_mac.h>)
+  #include <esp_mac.h>
+#endif
 #include <soc/rtc_cntl_reg.h>
 
 #include "mbedtls/ecdsa.h"
@@ -444,7 +448,7 @@ String derivePufPublicKey() {
 
   size_t pub_len = 0;
   uint8_t pub_buf[65] = {0};
-  mbedtls_ecp_point_write_binary(&grp, &Q, MBEDTLS_ECP_POINT_CONVERSION_UNCOMPRESSED, &pub_len, pub_buf, sizeof(pub_buf));
+  mbedtls_ecp_point_write_binary(&grp, &Q, MBEDTLS_ECP_PF_UNCOMPRESSED, &pub_len, pub_buf, sizeof(pub_buf));
 
   // ZERO-KNOWLEDGE WIPE: Destroy private scalar immediately
   mbedtls_mpi_free(&d);
