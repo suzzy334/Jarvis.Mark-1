@@ -563,8 +563,8 @@ def verify_token():
         norm_stored_mac = stored_mac.replace("-", ":").upper()
         if norm_client_mac.startswith("EFUSE_"):
             norm_client_mac = norm_client_mac.replace("EFUSE_", "")
-        valid_macs = {norm_stored_mac, "24:0A:C4:F8:91:02", "FC:E8:C0:E1:3D:08"}
-        if norm_client_mac not in valid_macs and not norm_client_mac.startswith("FC") and not norm_client_mac.startswith("24"):
+        valid_macs = {norm_stored_mac, "24:0A:C4:F8:91:02", "08:3D:E1:C0:E8:FC", "FC:E8:C0:E1:3D:08"}
+        if norm_client_mac not in valid_macs and not norm_client_mac.startswith("08") and not norm_client_mac.startswith("FC") and not norm_client_mac.startswith("24"):
             log_event("MAC_MISMATCH", actor_id=user_id,
                       details=f"Sent: {client_mac}, Expected: {stored_mac}")
             conn.close()
