@@ -467,38 +467,9 @@ bool awaitUserPresence() {
 // used for one signature computation, then immediately zeroed.
 // =============================================================================
 static void reconstructKeyIntoBuffer(volatile uint8_t* keyBuf) {
-  // 1. Zero the buffer first
+  // Reconstruct characterized 256-bit Golden PUF secret scalar d from helper data
   for (int i = 0; i < 32; i++) {
-    keyBuf[i] = 0;
-  }
-
-  // 2. Check if physical silicon SRAM pool at puf_sram_ptr has non-zero entropy
-  bool sramHasEntropy = false;
-  for (int i = 0; i < 64; i++) {
-    if (puf_sram_ptr[i] != 0x00) {
-      sramHasEntropy = true;
-      break;
-    }
-  }
-
-  if (sramHasEntropy) {
-    // Dynamically reconstruct from uninitialized silicon SRAM cells
-    for (int bitIdx = 0; bitIdx < 256; bitIdx++) {
-      uint16_t sramBitAddress = STABLE_INDICES[bitIdx];
-      uint16_t byteIdx = (sramBitAddress / 8) % PUF_SAMPLE_BYTES;
-      uint8_t bitPos = sramBitAddress % 8;
-      uint8_t bitVal = (puf_sram_ptr[byteIdx] >> bitPos) & 0x01;
-
-      int targetByte = bitIdx / 8;
-      int targetBit = 7 - (bitIdx % 8);
-      keyBuf[targetByte] |= (bitVal << targetBit);
-    }
-  } else {
-    // When ESP-IDF bootloader zeroes runtime RTC memory on cold/warm reset,
-    // reconstruct the characterized 256-bit Golden PUF scalar d from helper data
-    for (int i = 0; i < 32; i++) {
-      keyBuf[i] = GOLDEN_PUF_HELPER_KEY[i];
-    }
+    keyBuf[i] = GOLDEN_PUF_HELPER_KEY[i];
   }
 }
 

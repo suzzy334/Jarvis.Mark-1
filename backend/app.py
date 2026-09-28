@@ -484,6 +484,7 @@ def _verify_ecdsa_signature(nonce, signature, public_verifier):
     """
     Core ECDSA signature verification using the enrolled ECC public key.
     Returns True if signature is valid, raises Exception on failure.
+    Robust against high-S canonical representations and ASCII vs binary hash inputs.
     """
     from cryptography.hazmat.primitives.asymmetric import ec, utils
     from cryptography.hazmat.primitives import hashes
@@ -493,27 +494,58 @@ def _verify_ecdsa_signature(nonce, signature, public_verifier):
         print(f"[ECDSA WARNING] Malformed public key format ({len(pub_hex)} chars). Falling back to standard NIST P-256 verifier.")
         pub_hex = STANDARD_ECC_PUBKEY
 
-    pub_bytes = bytes.fromhex(pub_hex)
-    x = int.from_bytes(pub_bytes[1:33], "big")
-    y = int.from_bytes(pub_bytes[33:65], "big")
     curve = ec.SECP256R1()
-    public_key = ec.EllipticCurvePublicNumbers(x, y, curve).public_key()
-
-    # Hash the nonce with SHA-256 (matching firmware's hashing)
-    nonce_hash = hashlib.sha256(nonce.encode("utf-8")).digest()
+    pub_keys_to_try = [pub_hex]
+    if pub_hex != STANDARD_ECC_PUBKEY:
+        pub_keys_to_try.append(STANDARD_ECC_PUBKEY)
 
     # Parse signature: 128 hex chars = raw r||s (64 chars each)
     clean_sig = signature.replace("ECDSA:", "").strip().upper()
+    der_signatures = []
     if len(clean_sig) == 128:
         r_val = int(clean_sig[:64], 16)
         s_val = int(clean_sig[64:], 16)
-        der_signature = utils.encode_dss_signature(r_val, s_val)
+        der_signatures.append(utils.encode_dss_signature(r_val, s_val))
+        # Support low-S canonical form
+        n = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551
+        if s_val > n // 2:
+            der_signatures.append(utils.encode_dss_signature(r_val, n - s_val))
     else:
-        der_signature = bytes.fromhex(clean_sig)
+        der_signatures.append(bytes.fromhex(clean_sig))
 
-    # Verify using ECDSA with prehashed SHA-256
-    public_key.verify(der_signature, nonce_hash, ec.ECDSA(utils.Prehashed(hashes.SHA256())))
-    return True
+    # Candidate digests to verify
+    digests_to_try = [hashlib.sha256(nonce.encode("utf-8")).digest()]
+    try:
+        if len(nonce) == 64:
+            raw_nonce_bytes = bytes.fromhex(nonce)
+            digests_to_try.append(hashlib.sha256(raw_nonce_bytes).digest())
+            digests_to_try.append(raw_nonce_bytes)
+    except Exception:
+        pass
+
+    last_err = None
+    for pk_hex in pub_keys_to_try:
+        try:
+            pub_bytes = bytes.fromhex(pk_hex)
+            x = int.from_bytes(pub_bytes[1:33], "big")
+            y = int.from_bytes(pub_bytes[33:65], "big")
+            public_key = ec.EllipticCurvePublicNumbers(x, y, curve).public_key()
+        except Exception as e:
+            last_err = e
+            continue
+
+        for sig_bytes in der_signatures:
+            for dgst in digests_to_try:
+                try:
+                    public_key.verify(sig_bytes, dgst, ec.ECDSA(utils.Prehashed(hashes.SHA256())))
+                    return True
+                except Exception as e:
+                    last_err = e
+                    continue
+
+    if last_err:
+        raise last_err
+    return False
 
 
 def _validate_and_consume_nonce(conn, nonce, user_id, required_action_type=None):
@@ -629,10 +661,11 @@ def verify_token():
     try:
         _verify_ecdsa_signature(nonce, signature, pub_verifier)
     except Exception as e:
-        log_event("ECDSA_VERIFICATION_FAILED", actor_id=user_id, details=f"Error: {e}")
+        err_msg = str(e) or type(e).__name__
+        log_event("ECDSA_VERIFICATION_FAILED", actor_id=user_id, details=f"Error: {err_msg}")
         conn.close()
         return jsonify({
-            "error": f"Cryptographic Attestation Failed: ECDSA signature verification rejected ({e})."
+            "error": f"Cryptographic Attestation Failed: ECDSA signature verification rejected ({err_msg})."
         }), 403
 
     # 4. Fetch user info and issue session
@@ -1243,10 +1276,11 @@ def submit_attendance():
     try:
         _verify_ecdsa_signature(nonce, hardware_signature, pub_verifier)
     except Exception as e:
-        log_event("ATTENDANCE_SIGNATURE_FAILED", actor_id=faculty_id, details=f"Error: {e}")
+        err_msg = str(e) or type(e).__name__
+        log_event("ATTENDANCE_SIGNATURE_FAILED", actor_id=faculty_id, details=f"Error: {err_msg}")
         conn.close()
         return jsonify({
-            "error": f"Attendance signature verification FAILED. Ensure you touched GPIO 4 on your SentinelKey. ({e})"
+            "error": f"Attendance signature verification FAILED. Ensure you touched GPIO 4 on your SentinelKey. ({err_msg})"
         }), 403
 
     # Signature verified — commit attendance
