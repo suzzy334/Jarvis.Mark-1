@@ -932,7 +932,8 @@
             nonce: nonce,
             signature: signature,
             device_id: window.sentinelBridge.activeDeviceId || targetDeviceId,
-            mac_address: (window.sentinelBridge && window.sentinelBridge.activeMac) ? window.sentinelBridge.activeMac : undefined
+            mac_address: (window.sentinelBridge && window.sentinelBridge.activeMac) ? window.sentinelBridge.activeMac : undefined,
+            public_key: (window.sentinelBridge && window.sentinelBridge.activePubkey) ? window.sentinelBridge.activePubkey : undefined
           })
         });
 

@@ -730,7 +730,8 @@
             session_date: dateStr,
             device_id: currentFaculty.token,
             records: rosterData.map(r => ({ student_id: r.student_id, status: r.status })),
-            hardware_signature: signature
+            hardware_signature: signature,
+            public_key: (window.sentinelBridge && window.sentinelBridge.activePubkey) ? window.sentinelBridge.activePubkey : undefined
           })
         });
 

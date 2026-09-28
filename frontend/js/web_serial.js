@@ -96,6 +96,22 @@ class SentinelKeyBridge {
         }
       }
 
+      if (!this.activePubkey) {
+        try {
+          await this.writeLine("GET_PUBKEY");
+          const pubResp = await this.readLine(1500);
+          if (pubResp && pubResp.startsWith("PUBKEY:")) {
+            const pk = pubResp.substring("PUBKEY:".length).trim();
+            if (pk.length === 130 && pk.startsWith("04")) {
+              this.activePubkey = pk;
+              detectedPubkey = pk;
+            }
+          }
+        } catch (e) {
+          // ignore serial probe timeout
+        }
+      }
+
       if (this.onStatusChange) {
         const macInfo = this.activeMac ? ` [MAC: ${this.activeMac}]` : "";
         this.onStatusChange(
