@@ -34,7 +34,7 @@ CORS(app, supports_credentials=True, origins=["https://jarvis-mark-1.vercel.app"
 
 # Rate limiting state (in-memory, resets on restart)
 _login_attempts = {}  # {identifier: {"count": N, "last_attempt": datetime}}
-MAX_LOGIN_ATTEMPTS = 5
+MAX_LOGIN_ATTEMPTS = 50
 LOCKOUT_DURATION = timedelta(minutes=15)
 
 
